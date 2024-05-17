@@ -1,0 +1,25 @@
+{{- if .Values.environment.create -}}
+{{- if .Values.environment.secret -}}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ include "portkeyenterprise.fullname" . }}
+  labels:
+    {{- include "portkeyenterprise.labels" . | nindent 4 }}
+data:    
+{{- range $key, $val := .Values.environment.data }}
+  {{ $key }}: {{ $val | b64enc }}
+{{- end -}}
+{{- else -}}  
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "portkeyenterprise.fullname" . }}
+  labels:
+    {{- include "portkeyenterprise.labels" . | nindent 4 }}
+data:
+{{- range $key, $val := .Values.environment.data }}
+  {{ $key }}: {{ $val }}
+{{- end -}}
+{{- end -}}
+{{- end -}}
