@@ -28,19 +28,22 @@ environment:
   secret: true
   # Specify the parameters required by Portkey Enterprise
   data:
+    SERVICE_NAME: portkeyenterprise
+    PORTKEY_API_KEY: 
+    PORTKEY_ORGANISATION_ID: 
+    LOG_STORE: mongo
     MONGO_DB_CONNECTION_URL: 
     MONGO_DATABASE: 
     MONGO_COLLECTION_NAME: 
-    REDIS_URL: redis://redis:6379
+    ANALYTICS_STORE: 
     CLICKHOUSE_USER: 
     CLICKHOUSE_PASSWORD: 
     CLICKHOUSE_HOST: 
     CLICKHOUSE_LOG_TABLE: 
     CLICKHOUSE_FEEDBACK_TABLE: 
     CLICKHOUSE_KV_HASH_MAP_TABLE: 
-    PORTKEY_API_KEY: 
-    PORTKEY_ORGANISATION_ID: 
-    SERVICE_NAME: portkeyenterprise
+    CACHE_STORE: redis
+    REDIS_URL: redis://redis:6379
     REDIS_TLS_ENABLED: false
 
 serviceAccount:

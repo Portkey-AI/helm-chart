@@ -8,7 +8,7 @@ metadata:
     {{- include "portkeyenterprise.labels" . | nindent 4 }}
 data:    
 {{- range $key, $val := .Values.environment.data }}
-  {{ $key }}: {{ $val | b64enc }}
+  {{ $key }}: {{- if $val }} {{ $val | b64enc }} {{- else }} "" {{- end }}
 {{- end -}}
 {{- else -}}  
 apiVersion: v1
