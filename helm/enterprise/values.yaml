@@ -74,6 +74,8 @@ securityContext: {}
 service:
   type: NodePort
   port: 8787
+  additionalLabels: {}
+  annotations: {}
 
 ingress:
   enabled: false
