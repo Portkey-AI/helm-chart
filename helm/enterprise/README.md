@@ -40,6 +40,7 @@ environment:
     REDIS_URL: 
     REDIS_TLS_ENABLED: 
     PORTKEY_CLIENT_AUTH: 
+    ORGANISATIONS_TO_SYNC: 
 ```
 ### Analytics Store
 
@@ -91,7 +92,12 @@ The following values are mandatory
 
 ### Sync
 
-`PORTKEY_CLIENT_AUTH` is mandatory
+The following are  mandatory
+
+```
+    PORTKEY_CLIENT_AUTH:
+    ORGANISATIONS_TO_SYNC:
+```
 
 ## Installation
 Install the portkeyenterprise chart:

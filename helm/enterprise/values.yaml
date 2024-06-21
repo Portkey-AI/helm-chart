@@ -47,6 +47,7 @@ environment:
     REDIS_URL: redis://redis:6379
     REDIS_TLS_ENABLED: false
     PORTKEY_CLIENT_AUTH: 
+    ORGANISATIONS_TO_SYNC: 
 
 serviceAccount:
   # Specifies whether a service account should be created
