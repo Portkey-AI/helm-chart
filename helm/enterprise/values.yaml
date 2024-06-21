@@ -8,7 +8,7 @@ image:
   repository: portkeyai/gateway_enterprise
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "1.1.1"
+  tag: "1.3.0"
 
 imagePullSecrets: [portkeyenterpriseregistrycredentials]
 nameOverride: ""
@@ -29,26 +29,24 @@ environment:
   # Specify the parameters required by Portkey Enterprise
   data:
     SERVICE_NAME: portkeyenterprise
-    PORTKEY_API_KEY: 
-    PORTKEY_ORGANISATION_ID: 
     LOG_STORE: mongo
     MONGO_DB_CONNECTION_URL: 
     MONGO_DATABASE: 
     MONGO_COLLECTION_NAME: 
-    S3_REGION: 
-    S3_ACCESS_KEY: 
-    S3_SECRET_KEY: 
-    S3_GENERATIONS_BUCKET: 
-    ANALYTICS_STORE: 
-    CLICKHOUSE_USER: 
-    CLICKHOUSE_PASSWORD: 
-    CLICKHOUSE_HOST: 
-    CLICKHOUSE_LOG_TABLE: 
-    CLICKHOUSE_FEEDBACK_TABLE: 
-    CLICKHOUSE_KV_HASH_MAP_TABLE: 
+    LOG_STORE_REGION: 
+    LOG_STORE_ACCESS_KEY: 
+    LOG_STORE_SECRET_KEY: 
+    LOG_STORE_GENERATIONS_BUCKET: 
+    ANALYTICS_STORE: clickhouse
+    ANALYTICS_STORE_ENDPOINT: 
+    ANALYTICS_STORE_USER: 
+    ANALYTICS_STORE_PASSWORD: 
+    ANALYTICS_LOG_TABLE: 
+    ANALYTICS_FEEDBACK_TABLE: 
     CACHE_STORE: redis
     REDIS_URL: redis://redis:6379
     REDIS_TLS_ENABLED: false
+    PORTKEY_CLIENT_AUTH: 
 
 serviceAccount:
   # Specifies whether a service account should be created
