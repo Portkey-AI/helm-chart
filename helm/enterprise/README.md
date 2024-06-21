@@ -22,26 +22,24 @@ environment:
   ...
   data:
     SERVICE_NAME: 
-    PORTKEY_API_KEY: 
-    PORTKEY_ORGANISATION_ID: 
     LOG_STORE: 
     MONGO_DB_CONNECTION_URL: 
     MONGO_DATABASE: 
     MONGO_COLLECTION_NAME: 
-    S3_REGION: 
-    S3_ACCESS_KEY: 
-    S3_SECRET_KEY: 
-    S3_GENERATIONS_BUCKET: 
+    LOG_STORE_REGION: 
+    LOG_STORE_ACCESS_KEY: 
+    LOG_STORE_SECRET_KEY: 
+    LOG_STORE_GENERATIONS_BUCKET: 
     ANALYTICS_STORE: 
-    CLICKHOUSE_USER: 
-    CLICKHOUSE_PASSWORD: 
-    CLICKHOUSE_HOST: 
-    CLICKHOUSE_LOG_TABLE: 
-    CLICKHOUSE_FEEDBACK_TABLE: 
-    CLICKHOUSE_KV_HASH_MAP_TABLE:
+    ANALYTICS_STORE_ENDPOINT: 
+    ANALYTICS_STORE_USER: 
+    ANALYTICS_STORE_PASSWORD: 
+    ANALYTICS_LOG_TABLE: 
+    ANALYTICS_FEEDBACK_TABLE: 
     CACHE_STORE: 
     REDIS_URL: 
     REDIS_TLS_ENABLED: 
+    PORTKEY_CLIENT_AUTH: 
 ```
 ### Analytics Store
 
@@ -49,12 +47,11 @@ Supported `ANALYTICS_STORE` is `clickhouse`.
 The following values are needed for storing analytics data.
 
 ```
-    CLICKHOUSE_USER: 
-    CLICKHOUSE_PASSWORD: 
-    CLICKHOUSE_HOST: 
-    CLICKHOUSE_LOG_TABLE: 
-    CLICKHOUSE_FEEDBACK_TABLE: 
-    CLICKHOUSE_KV_HASH_MAP_TABLE:
+    ANALYTICS_STORE_ENDPOINT: 
+    ANALYTICS_STORE_USER: 
+    ANALYTICS_STORE_PASSWORD: 
+    ANALYTICS_LOG_TABLE:
+    ANALYTICS_FEEDBACK_TABLE:
 ```
 
 ### Log Store
@@ -69,10 +66,10 @@ If `LOG_STORE` is `mongo`, the following are needed
 
 If `LOG_STORE` is `s3` or `wasabi` or `gcs`, the following values are mandatory
 ```
-S3_REGION
-S3_ACCESS_KEY
-S3_SECRET_KEY
-S3_GENERATIONS_BUCKET
+    LOG_STORE_REGION: 
+    LOG_STORE_ACCESS_KEY: 
+    LOG_STORE_SECRET_KEY: 
+    LOG_STORE_GENERATIONS_BUCKET:
 ```
 
 All the above mentioned are S3 Compatible document storages and interopable with S3 API. You need to  generate `Access Key` and `Secret Key` from the respective providers.
@@ -91,6 +88,10 @@ The following values are mandatory
 
 `REDIS_URL` defaults to `redis://redis:6379`
 `REDIS_TLS_ENABLED` defaults to `false`
+
+### Sync
+
+`PORTKEY_CLIENT_AUTH` is mandatory
 
 ## Installation
 Install the portkeyenterprise chart:
