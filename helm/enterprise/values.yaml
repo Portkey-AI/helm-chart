@@ -45,7 +45,7 @@ environment:
     ANALYTICS_FEEDBACK_TABLE: 
     CACHE_STORE: redis
     REDIS_URL: redis://redis:6379
-    REDIS_TLS_ENABLED: false
+    REDIS_TLS_ENABLED: "false"
     PORTKEY_CLIENT_AUTH: 
     ORGANISATIONS_TO_SYNC: 
 
