@@ -108,11 +108,11 @@ resources: {}
 
 livenessProbe:
   httpGet:
-    path: /
+    path: /v1/health
     port: 8787
 readinessProbe:
   httpGet:
-    path: /
+    path: /v1/health
     port: 8787
 
 autoscaling:
