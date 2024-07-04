@@ -8,7 +8,7 @@ image:
   repository: portkeyai/gateway_enterprise
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "1.3.0"
+  tag: "1.4.1"
 
 imagePullSecrets: [portkeyenterpriseregistrycredentials]
 nameOverride: ""
@@ -37,6 +37,9 @@ environment:
     LOG_STORE_ACCESS_KEY: 
     LOG_STORE_SECRET_KEY: 
     LOG_STORE_GENERATIONS_BUCKET: 
+    AZURE_STORAGE_ACCOUNT: 
+    AZURE_STORAGE_KEY: 
+    AZURE_STORAGE_CONTAINER: 
     ANALYTICS_STORE: clickhouse
     ANALYTICS_STORE_ENDPOINT: 
     ANALYTICS_STORE_USER: 

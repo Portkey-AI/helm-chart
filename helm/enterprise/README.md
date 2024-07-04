@@ -30,6 +30,9 @@ environment:
     LOG_STORE_ACCESS_KEY: 
     LOG_STORE_SECRET_KEY: 
     LOG_STORE_GENERATIONS_BUCKET: 
+    AZURE_STORAGE_ACCOUNT: 
+    AZURE_STORAGE_KEY: 
+    AZURE_STORAGE_CONTAINER:
     ANALYTICS_STORE: 
     ANALYTICS_STORE_ENDPOINT: 
     ANALYTICS_STORE_USER: 
@@ -56,7 +59,7 @@ The following values are needed for storing analytics data.
 ```
 
 ### Log Store
-`LOG_STORE` can be `mongo`, `s3`, `wasabi` or `gcs`.
+`LOG_STORE` can be `mongo`, `s3`, `wasabi`, `gcs` or `azure`.
 
 If `LOG_STORE` is `mongo`, the following are needed
 ```
@@ -71,6 +74,13 @@ If `LOG_STORE` is `s3` or `wasabi` or `gcs`, the following values are mandatory
     LOG_STORE_ACCESS_KEY: 
     LOG_STORE_SECRET_KEY: 
     LOG_STORE_GENERATIONS_BUCKET:
+```
+
+If `LOG_STORE` is `azure`, the following values are mandatory
+```
+    AZURE_STORAGE_ACCOUNT: 
+    AZURE_STORAGE_KEY: 
+    AZURE_STORAGE_CONTAINER: 
 ```
 
 All the above mentioned are S3 Compatible document storages and interopable with S3 API. You need to  generate `Access Key` and `Secret Key` from the respective providers.
