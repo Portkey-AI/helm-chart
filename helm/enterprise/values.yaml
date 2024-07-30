@@ -126,13 +126,13 @@ autoscaling:
   # targetMemoryUtilizationPercentage: 80
 
 # Additional volumes on the output Deployment definition.
-volumes:
+volumes: []
 # - name: shared-folder
 #   configMap:
 #     name: resource-config
 
 # Additional volumeMounts on the output Deployment definition.
-volumeMounts:
+volumeMounts: []
 # - name: shared-folder
 #   mountPath: /etc/shared/document_db.pem
 #   subPath: document_db.pem
