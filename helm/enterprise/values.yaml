@@ -8,7 +8,7 @@ image:
   repository: portkeyai/gateway_enterprise
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "1.4.1"
+  tag: "1.5.0"
 
 imagePullSecrets: [portkeyenterpriseregistrycredentials]
 nameOverride: ""
@@ -126,17 +126,16 @@ autoscaling:
   # targetMemoryUtilizationPercentage: 80
 
 # Additional volumes on the output Deployment definition.
-volumes: []
-# - name: foo
-#   secret:
-#     secretName: mysecret
-#     optional: false
+volumes:
+# - name: shared-folder
+#   configMap:
+#     name: resource-config
 
 # Additional volumeMounts on the output Deployment definition.
-volumeMounts: []
-# - name: foo
-#   mountPath: "/etc/foo"
-#   readOnly: true
+volumeMounts:
+# - name: shared-folder
+#   mountPath: /etc/shared/document_db.pem
+#   subPath: document_db.pem
 
 nodeSelector: {}
 
