@@ -64,7 +64,7 @@ The following values are needed for storing analytics data.
 ```
 
 ### Log Store
-`LOG_STORE` can be `mongo`, `s3`, `s3_assumed`, `wasabi`, `gcs` or `azure`.
+`LOG_STORE` can be `mongo`, `s3`, `s3_assume`, `wasabi`, `gcs` or `azure`.
 
 If `LOG_STORE` is `mongo`, the following are needed
 ```
@@ -107,7 +107,7 @@ If `LOG_STORE` is `azure`, the following values are mandatory
     AZURE_STORAGE_CONTAINER: 
 ```
 
-If the log store is `s3_assumed`, following keys are mandatory
+If the log store is `s3_assume`, following keys are mandatory
 
 ```
 LOG_STORE_REGION
@@ -160,7 +160,7 @@ AWS_ASSUME_ROLE_SECRET_ACCESS_KEY
 AWS_ASSUME_ROLE_REGION
 ```
 
-Similar steps to `s3_assumed` in #Log Store section above
+Similar steps to `s3_assume` in #Log Store section above
 
 ### Cache Store
 If `CACHE_STORE` is set as `redis`, redis instance also get deployed in the cluster. 
