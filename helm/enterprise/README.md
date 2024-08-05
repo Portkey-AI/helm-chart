@@ -30,6 +30,11 @@ environment:
     LOG_STORE_ACCESS_KEY: 
     LOG_STORE_SECRET_KEY: 
     LOG_STORE_GENERATIONS_BUCKET: 
+    LOG_STORE_AWS_ROLE_ARN:
+    LOG_STORE_AWS_EXTERNAL_ID:
+    AWS_ASSUME_ROLE_ACCESS_KEY_ID:
+    AWS_ASSUME_ROLE_SECRET_ACCESS_KEY:
+    AWS_ASSUME_ROLE_REGION:
     AZURE_STORAGE_ACCOUNT: 
     AZURE_STORAGE_KEY: 
     AZURE_STORAGE_CONTAINER:
@@ -59,7 +64,7 @@ The following values are needed for storing analytics data.
 ```
 
 ### Log Store
-`LOG_STORE` can be `mongo`, `s3`, `wasabi`, `gcs` or `azure`.
+`LOG_STORE` can be `mongo`, `s3`, `s3_assumed`, `wasabi`, `gcs` or `azure`.
 
 If `LOG_STORE` is `mongo`, the following are needed
 ```
@@ -75,6 +80,25 @@ If `LOG_STORE` is `s3` or `wasabi` or `gcs`, the following values are mandatory
     LOG_STORE_SECRET_KEY: 
     LOG_STORE_GENERATIONS_BUCKET:
 ```
+All the above mentioned are S3 Compatible document storages and interopable with S3 API. You need to  generate `Access Key` and `Secret Key` from the respective providers.
+
+**1. AWS S3**
+
+https://aws.amazon.com/blogs/security/wheres-my-secret-access-key
+
+Security Credentials -> Access Keys -> Create Access Keys
+
+**2. Google Cloud Storage**
+
+https://cloud.google.com/storage/docs/interoperability
+
+https://cloud.google.com/storage/docs/authentication/hmackeys
+
+Cloud Storage -> Settings -> Interopability -> Access keys for service accounts -> Create Key for Service Accounts
+
+**3. Wasabi**
+
+Access Keys ->  Create Access Key
 
 If `LOG_STORE` is `azure`, the following values are mandatory
 ```
@@ -83,7 +107,60 @@ If `LOG_STORE` is `azure`, the following values are mandatory
     AZURE_STORAGE_CONTAINER: 
 ```
 
-All the above mentioned are S3 Compatible document storages and interopable with S3 API. You need to  generate `Access Key` and `Secret Key` from the respective providers.
+If the log store is `s3_assumed`, following keys are mandatory
+
+```
+LOG_STORE_REGION
+LOG_STORE_ACCESS_KEY
+LOG_STORE_SECRET_KEY
+LOG_STORE_AWS_ROLE_ARN
+LOG_STORE_AWS_EXTERNAL_ID
+```
+`LOG_STORE_ACCESS_KEY`,`LOG_STORE_SECRET_KEY` will be supplied by Portkey.
+
+`LOG_STORE_AWS_ROLE_ARN` and `LOG_STORE_AWS_EXTERNAL_ID` need to be enabled by following the below steps
+
+1. Go to the IAM console in the AWS Management Console.
+2. Click "Roles" in the left sidebar, then "Create role".
+3. Choose "Another AWS account" as the trusted entity.
+4. Enter the Account ID of the Portkey Aws Account Id (which will be shared).
+5. Select "Require external Id" for added security.
+6. Attach the necessary permissions: 
+- AmazonBedrockFullAccess (or a more restrictive custom policy)
+7. Name the role (e.g., "BedrockAssumedRolePortkey") and create it.
+8. After creating the role, select it and go to the "Trust relationships" tab.
+9. Edit the trust relationship and ensure it looks similar to this:
+
+```
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "<arn_shared_by_portkey>"
+      },
+      "Action": "sts:AssumeRole",
+      "Condition": {
+        "StringEquals": {
+          "sts:ExternalId":"<LOG_STORE_AWS_EXTERNAL_ID>"
+        }
+      }
+    }
+  ]
+}
+```
+Note: Share the arn of the role created with Portkey.
+
+### Aws Assumed
+If Aws assumed is used for interacting with Bedrock or other Aws from Control Plane, following keys are mandatory
+```
+AWS_ASSUME_ROLE_ACCESS_KEY_ID
+AWS_ASSUME_ROLE_SECRET_ACCESS_KEY 
+AWS_ASSUME_ROLE_REGION
+```
+
+Similar steps to `s3_assumed` in #Log Store section above
 
 ### Cache Store
 If `CACHE_STORE` is set as `redis`, redis instance also get deployed in the cluster. 
