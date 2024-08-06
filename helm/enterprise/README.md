@@ -56,39 +56,77 @@ Supported `ANALYTICS_STORE` is `clickhouse`.
 The following values are needed for storing analytics data.
 
 ```
-    ANALYTICS_STORE_ENDPOINT: 
-    ANALYTICS_STORE_USER: 
-    ANALYTICS_STORE_PASSWORD: 
-    ANALYTICS_LOG_TABLE:
-    ANALYTICS_FEEDBACK_TABLE:
+  ANALYTICS_STORE_ENDPOINT: 
+  ANALYTICS_STORE_USER: 
+  ANALYTICS_STORE_PASSWORD: 
+  ANALYTICS_LOG_TABLE:
+  ANALYTICS_FEEDBACK_TABLE:
 ```
 
-### Log Store
+### Log Storage
+
 `LOG_STORE` can be `mongo`, `s3`, `s3_assume`, `wasabi`, `gcs` or `azure`.
 
-If `LOG_STORE` is `mongo`, the following are needed
+**1. Mongo**
+
+If you want to use Mongo or Document DB for storage, `LOG_STORE` will be `mongo`. The following values are mandatory
 ```
-    MONGO_DB_CONNECTION_URL: 
-    MONGO_DATABASE: 
-    MONGO_COLLECTION_NAME: 
+  MONGO_DB_CONNECTION_URL: 
+  MONGO_DATABASE: 
+  MONGO_COLLECTION_NAME: 
+```
+If you are using pem file for authentication, you need to follow the below additional steps
+
+- In `resources-config.yaml` file supply pem file details under data(for example, document_db.pem) along with its content.
+- In `values.yaml` use the below config
+```
+volumes:
+- name: shared-folder
+  configMap:
+    name: resource-config
+volumeMounts:
+- name: shared-folder
+  mountPath: /etc/shared/<shared_pem>
+  subPath: <shared_pem>
+```
+The `MONGO_DB_CONNECTION_URL` should use /etc/shared<shared_pem> in tlsCAFile param. For example, `mongodb://<user>:<password>@<host>?tls=true&tlsCAFile=/etc/shared/document_db.pem&retryWrites=false`
+
+**2. AWS S3 Compatible Blob storage**
+
+Portkey supports following S3 compatible Blob storages 
+- AWS S3
+- Google Cloud Storage
+- Wasabi
+
+The above mentioned S3 Compatible document storages are interopable with S3 API. 
+
+The following values are mandatory
+```
+  LOG_STORE_REGION: 
+  LOG_STORE_ACCESS_KEY: 
+  LOG_STORE_SECRET_KEY: 
+  LOG_STORE_GENERATIONS_BUCKET:
 ```
 
-If `LOG_STORE` is `s3` or `wasabi` or `gcs`, the following values are mandatory
-```
-    LOG_STORE_REGION: 
-    LOG_STORE_ACCESS_KEY: 
-    LOG_STORE_SECRET_KEY: 
-    LOG_STORE_GENERATIONS_BUCKET:
-```
-All the above mentioned are S3 Compatible document storages and interopable with S3 API. You need to  generate `Access Key` and `Secret Key` from the respective providers.
+You need to  generate `Access Key` and `Secret Key` from the respective providers as mentioned below.
 
-**1. AWS S3**
+**2.1. AWS S3**
+
+`LOG_STORE` will be `s3`.
+
+Access Key can be generated as mentioned here - 
 
 https://aws.amazon.com/blogs/security/wheres-my-secret-access-key
 
 Security Credentials -> Access Keys -> Create Access Keys
 
-**2. Google Cloud Storage**
+**2.2. Google Cloud Storage**
+
+`LOG_STORE` will be `gcs`.
+
+Only s3 interoble way of gcs is supported currently. 
+
+Access Key can be generated as mentioned here - 
 
 https://cloud.google.com/storage/docs/interoperability
 
@@ -96,27 +134,41 @@ https://cloud.google.com/storage/docs/authentication/hmackeys
 
 Cloud Storage -> Settings -> Interopability -> Access keys for service accounts -> Create Key for Service Accounts
 
-**3. Wasabi**
+**2.3. Wasabi**
+
+`LOG_STORE` will be `wasabi`.
+
+Access Key can be generated from
 
 Access Keys ->  Create Access Key
 
-If `LOG_STORE` is `azure`, the following values are mandatory
+**3. Azure Blob Storage**
+
+If you want to use Azure blob storage, `LOG_STORE` will be `azure`. 
+
+The following values are mandatory
 ```
-    AZURE_STORAGE_ACCOUNT: 
-    AZURE_STORAGE_KEY: 
-    AZURE_STORAGE_CONTAINER: 
+  AZURE_STORAGE_ACCOUNT: 
+  AZURE_STORAGE_KEY: 
+  AZURE_STORAGE_CONTAINER: 
 ```
 
-If the log store is `s3_assume`, following keys are mandatory
+**4. S3 Assumed Role**
+
+If you want to use s3 using Assumed Role Authentication, the log store will be `s3_assume`. 
+
+The following values are mandatory
 
 ```
-LOG_STORE_REGION
-LOG_STORE_ACCESS_KEY
-LOG_STORE_SECRET_KEY
-LOG_STORE_AWS_ROLE_ARN
-LOG_STORE_AWS_EXTERNAL_ID
+  LOG_STORE_REGION
+  LOG_STORE_GENERATIONS_BUCKET
+  LOG_STORE_ACCESS_KEY
+  LOG_STORE_SECRET_KEY
+  LOG_STORE_AWS_ROLE_ARN
+  LOG_STORE_AWS_EXTERNAL_ID
 ```
-`LOG_STORE_ACCESS_KEY`,`LOG_STORE_SECRET_KEY` will be supplied by Portkey.
+
+`LOG_STORE_ACCESS_KEY`,`LOG_STORE_SECRET_KEY` will be supplied by Portkey. Rest needs to be provisioned and supplied.
 
 `LOG_STORE_AWS_ROLE_ARN` and `LOG_STORE_AWS_EXTERNAL_ID` need to be enabled by following the below steps
 
@@ -126,8 +178,8 @@ LOG_STORE_AWS_EXTERNAL_ID
 4. Enter the Account ID of the Portkey Aws Account Id (which will be shared).
 5. Select "Require external Id" for added security.
 6. Attach the necessary permissions: 
-- AmazonBedrockFullAccess (or a more restrictive custom policy)
-7. Name the role (e.g., "BedrockAssumedRolePortkey") and create it.
+- AmazonS3FullAccess (or a more restrictive custom policy for S3)
+7. Name the role (e.g., "S3AssumedRolePortkey") and create it.
 8. After creating the role, select it and go to the "Trust relationships" tab.
 9. Edit the trust relationship and ensure it looks similar to this:
 
@@ -150,17 +202,21 @@ LOG_STORE_AWS_EXTERNAL_ID
   ]
 }
 ```
-Note: Share the arn of the role created with Portkey.
+`LOG_STORE_AWS_ROLE_ARN` will be the same as arn for the above role.
 
-### Aws Assumed
-If Aws assumed is used for interacting with Bedrock or other Aws from Control Plane, following keys are mandatory
+Note: Share the `LOG_STORE_AWS_ROLE_ARN` created with Portkey.
+
+### Aws Assumed Role (for Bedrock)
+
+If Aws assumed Role is used for authentication Bedrock, following keys are mandatory
 ```
-AWS_ASSUME_ROLE_ACCESS_KEY_ID
-AWS_ASSUME_ROLE_SECRET_ACCESS_KEY 
-AWS_ASSUME_ROLE_REGION
+  AWS_ASSUME_ROLE_ACCESS_KEY_ID
+  AWS_ASSUME_ROLE_SECRET_ACCESS_KEY 
+  AWS_ASSUME_ROLE_REGION
 ```
 
-Similar steps to `s3_assume` in #Log Store section above
+Follow, similar steps to `S3 Assumed Role` in Log Store section above. In step #6, following accesses are needed
+- AmazonBedrockFullAccess (or a more restrictive custom policy for Bedrock)
 
 ### Cache Store
 If `CACHE_STORE` is set as `redis`, redis instance also get deployed in the cluster. 
@@ -170,8 +226,8 @@ If you are using custom redis, then leave it blank.
 The following values are mandatory
 
 ```
-    REDIS_URL: 
-    REDIS_TLS_ENABLED: 
+  REDIS_URL: 
+  REDIS_TLS_ENABLED: 
 ```
 
 `REDIS_URL` defaults to `redis://redis:6379`
@@ -182,8 +238,8 @@ The following values are mandatory
 The following are  mandatory
 
 ```
-    PORTKEY_CLIENT_AUTH:
-    ORGANISATIONS_TO_SYNC:
+  PORTKEY_CLIENT_AUTH:
+  ORGANISATIONS_TO_SYNC:
 ```
 
 ## Installation
