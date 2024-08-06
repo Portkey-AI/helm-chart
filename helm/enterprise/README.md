@@ -97,7 +97,7 @@ Portkey supports following S3 compatible Blob storages
 - GCS
 - Wasabi
 
-The above mentioned are S3 Compatible document storages are interopable with S3 API. 
+The above mentioned S3 Compatible document storages are interopable with S3 API. 
 
 The following values are mandatory
 ```
@@ -150,7 +150,7 @@ The following values are mandatory
 
 **4. S3 Assumed Role**
 
-If you want to use s3 using Assumed Role, the log store will be `s3_assume`. 
+If you want to use s3 using Assumed Role Authentication, the log store will be `s3_assume`. 
 
 The following values are mandatory
 
