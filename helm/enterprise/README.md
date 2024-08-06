@@ -63,7 +63,8 @@ The following values are needed for storing analytics data.
   ANALYTICS_FEEDBACK_TABLE:
 ```
 
-### Log Store
+### Log Storage
+
 `LOG_STORE` can be `mongo`, `s3`, `s3_assume`, `wasabi`, `gcs` or `azure`.
 
 **1. Mongo**
@@ -90,11 +91,11 @@ volumeMounts:
 ```
 The `MONGO_DB_CONNECTION_URL` should use /etc/shared<shared_pem> in tlsCAFile param. For example, `mongodb://<user>:<password>@<host>?tls=true&tlsCAFile=/etc/shared/document_db.pem&retryWrites=false`
 
-**2. S3 Compatible Blob storage**
+**2. AWS S3 Compatible Blob storage**
 
 Portkey supports following S3 compatible Blob storages 
-- S3
-- GCS
+- AWS S3
+- Google Cloud Storage
 - Wasabi
 
 The above mentioned S3 Compatible document storages are interopable with S3 API. 
@@ -114,6 +115,7 @@ You need to  generate `Access Key` and `Secret Key` from the respective provider
 `LOG_STORE` will be `s3`.
 
 Access Key can be generated as mentioned here - 
+
 https://aws.amazon.com/blogs/security/wheres-my-secret-access-key
 
 Security Credentials -> Access Keys -> Create Access Keys
@@ -123,6 +125,9 @@ Security Credentials -> Access Keys -> Create Access Keys
 `LOG_STORE` will be `gcs`.
 
 Only s3 interoble way of gcs is supported currently. 
+
+Access Key can be generated as mentioned here - 
+
 https://cloud.google.com/storage/docs/interoperability
 
 https://cloud.google.com/storage/docs/authentication/hmackeys
