@@ -23,13 +23,14 @@ environment:
   data:
     SERVICE_NAME: 
     LOG_STORE: 
-    MONGO_DB_CONNECTION_URL: 
+    MONGO_DB_CONNECTION_URL:
     MONGO_DATABASE: 
     MONGO_COLLECTION_NAME: 
     LOG_STORE_REGION: 
     LOG_STORE_ACCESS_KEY: 
     LOG_STORE_SECRET_KEY: 
     LOG_STORE_GENERATIONS_BUCKET: 
+    LOG_STORE_BASEPATH: 
     LOG_STORE_AWS_ROLE_ARN:
     LOG_STORE_AWS_EXTERNAL_ID:
     AWS_ASSUME_ROLE_ACCESS_KEY_ID:
@@ -47,6 +48,7 @@ environment:
     CACHE_STORE: 
     REDIS_URL: 
     REDIS_TLS_ENABLED: 
+    REDIS_MODE: 
     PORTKEY_CLIENT_AUTH: 
     ORGANISATIONS_TO_SYNC: 
 ```
@@ -65,7 +67,7 @@ The following values are needed for storing analytics data.
 
 ### Log Storage
 
-`LOG_STORE` can be `mongo`, `s3`, `s3_assume`, `wasabi`, `gcs` or `azure`.
+`LOG_STORE` can be `mongo`, `s3`, `s3_assume`, `wasabi`, `gcs`, `azure`, or `netapp`.
 
 **1. Mongo**
 
@@ -96,7 +98,9 @@ The `MONGO_DB_CONNECTION_URL` should use /etc/shared<shared_pem> in tlsCAFile pa
 Portkey supports following S3 compatible Blob storages 
 - AWS S3
 - Google Cloud Storage
+- Azure Blob Storage
 - Wasabi
+- Netapp (s3 compliant APIs)
 
 The above mentioned S3 Compatible document storages are interopable with S3 API. 
 
@@ -142,7 +146,7 @@ Access Key can be generated from
 
 Access Keys ->  Create Access Key
 
-**3. Azure Blob Storage**
+**2.4. Azure Blob Storage**
 
 If you want to use Azure blob storage, `LOG_STORE` will be `azure`. 
 
@@ -153,7 +157,7 @@ The following values are mandatory
   AZURE_STORAGE_CONTAINER: 
 ```
 
-**4. S3 Assumed Role**
+**2.5. S3 Assumed Role**
 
 If you want to use s3 using Assumed Role Authentication, the log store will be `s3_assume`. 
 
@@ -204,7 +208,18 @@ The following values are mandatory
 ```
 `LOG_STORE_AWS_ROLE_ARN` will be the same as arn for the above role.
 
-Note: Share the `LOG_STORE_AWS_ROLE_ARN` created with Portkey.
+**2.6. Netapp**
+
+If you want to use Netapp's S3 compliant store, the log store will be `netapp`. 
+
+The following values are mandatory
+
+```
+  LOG_STORE_REGION
+  LOG_STORE_ACCESS_KEY
+  LOG_STORE_SECRET_KEY
+  LOG_STORE_BASEPATH
+```
 
 ### Aws Assumed Role (for Bedrock)
 
@@ -230,7 +245,9 @@ The following values are mandatory
   REDIS_TLS_ENABLED: 
 ```
 
-`REDIS_URL` defaults to `redis://redis:6379`
+If you are using redis in cluster mode, set `REDIS_MODE` to 'cluster' in values. If not this can be left blank
+
+note: `REDIS_URL` defaults to `redis://redis:6379`
 `REDIS_TLS_ENABLED` defaults to `false`
 
 ### Sync
