@@ -234,9 +234,19 @@ Follow, similar steps to `S3 Assumed Role` in Log Store section above. In step #
 - AmazonBedrockFullAccess (or a more restrictive custom policy for Bedrock)
 
 ### Cache Store
-If `CACHE_STORE` is set as `redis`, redis instance also get deployed in the cluster. 
+There are three possible ways to configure Redis. Set `CACHE_STORE` as one of the below
 
-If you are using custom redis, then leave it blank.
+- `redis`: Deploys Redis in the cluster
+- `aws-elastic-cache`: Use AWS managed ElastiCache
+- `custom`: Use any other Redis setup
+
+Set CACHE_STORE to match your chosen cache solution.
+
+Note: 
+- `REDIS_URL` defaults to `redis://redis:6379`
+- `REDIS_TLS_ENABLED` defaults to `false`
+- `TLS mode` is only supported with `aws-elastic-cache`
+- If you are using Redis in cluster mode, set `REDIS_MODE` to `cluster` in values. If not, this can be left blank.
 
 The following values are mandatory
 
@@ -245,10 +255,6 @@ The following values are mandatory
   REDIS_TLS_ENABLED: 
 ```
 
-If you are using redis in cluster mode, set `REDIS_MODE` to 'cluster' in values. If not this can be left blank
-
-note: `REDIS_URL` defaults to `redis://redis:6379`
-`REDIS_TLS_ENABLED` defaults to `false`
 
 ### Sync
 
