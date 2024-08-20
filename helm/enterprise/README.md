@@ -53,7 +53,6 @@ environment:
     REDIS_MODE: 
     PORTKEY_CLIENT_AUTH: 
     ORGANISATIONS_TO_SYNC:
-    ANALYTICS_GENERATION_HOOKS_TABLE
 ```
 ### Analytics Store
 
@@ -66,6 +65,7 @@ The following values are needed for storing analytics data.
   ANALYTICS_STORE_PASSWORD: 
   ANALYTICS_LOG_TABLE:
   ANALYTICS_FEEDBACK_TABLE:
+  ANALYTICS_GENERATION_HOOKS_TABLE:
 ```
 
 ### Log Storage
