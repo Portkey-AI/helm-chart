@@ -29,7 +29,7 @@ environment:
   # Specify the parameters required by Portkey Enterprise
   data:
     SERVICE_NAME: portkeyenterprise
-    PORT: 8787
+    PORT: "8787"
     LOG_STORE: 
     MONGO_DB_CONNECTION_URL: 
     MONGO_DATABASE: 
