@@ -92,3 +92,25 @@ Selector labels
 app.kubernetes.io/name: redis
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
+
+{{/*
+Vault Annotations
+*/}}
+{{- define "portkeyenterprise.vaultAnnotations" -}}
+vault.hashicorp.com/agent-inject: "true"
+vault.hashicorp.com/agent-inject-secret-{{ .Chart.Name }}: {{ .Values.vaultConfig.secretPath | quote }}
+vault.hashicorp.com/role: {{ .Values.vaultConfig.role | quote }}
+{{- end }}
+
+{{/*
+Vault Environment Variables
+*/}}
+{{- define "portkeyenterprise.vaultEnv" -}}
+{{- range $key, $value := .Values.environment.data }}
+- name: {{ $key }}
+  valueFrom:
+    secretKeyRef:
+      name: {{ $.Chart.Name }}
+      key: {{ $key }}
+{{- end }}
+{{- end }}

@@ -1,4 +1,4 @@
-{{- if .Values.environment.create -}}
+{{- if and .Values.environment.create (not .Values.useVaultInjection) -}}
 {{- if .Values.environment.secret -}}
 apiVersion: v1
 kind: Secret

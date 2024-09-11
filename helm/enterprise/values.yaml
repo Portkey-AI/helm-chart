@@ -21,6 +21,12 @@ imageCredentials:
   username: <docker-user>
   password: <docker-pwd>
 
+useVaultInjection: false  # Set this to true to use Vault injection
+
+vaultConfig:
+  secretPath: "path/to/your/secret"
+  role: "your-vault-role"
+
 environment:
   # Specify whether environment configuration should be deployed
   create: true
