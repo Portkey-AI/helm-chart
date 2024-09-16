@@ -37,6 +37,7 @@ environment:
     AWS_ASSUME_ROLE_ACCESS_KEY_ID:
     AWS_ASSUME_ROLE_SECRET_ACCESS_KEY:
     AWS_ASSUME_ROLE_REGION:
+    AZURE_AUTH_MODE: 
     AZURE_STORAGE_ACCOUNT: 
     AZURE_STORAGE_KEY: 
     AZURE_STORAGE_CONTAINER:
@@ -157,9 +158,11 @@ If you want to use Azure blob storage, `LOG_STORE` will be `azure`.
 The following values are mandatory
 ```
   AZURE_STORAGE_ACCOUNT: 
-  AZURE_STORAGE_KEY: 
   AZURE_STORAGE_CONTAINER: 
 ```
+If using Managed Identity, `AZURE_AUTH_MODE` must be set to `managed`.
+
+If not using Managed Identity, `AZURE_STORAGE_KEY` will be mandatory
 
 **2.5. S3 Assumed Role**
 

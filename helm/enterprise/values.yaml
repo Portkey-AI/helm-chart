@@ -8,7 +8,7 @@ image:
   repository: portkeyai/gateway_enterprise
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "1.5.0"
+  tag: "1.7.0"
 
 imagePullSecrets: [portkeyenterpriseregistrycredentials]
 nameOverride: ""
@@ -50,6 +50,7 @@ environment:
     AWS_ASSUME_ROLE_ACCESS_KEY_ID:
     AWS_ASSUME_ROLE_SECRET_ACCESS_KEY:
     AWS_ASSUME_ROLE_REGION:
+    AZURE_AUTH_MODE: 
     AZURE_STORAGE_ACCOUNT: 
     AZURE_STORAGE_KEY: 
     AZURE_STORAGE_CONTAINER:
