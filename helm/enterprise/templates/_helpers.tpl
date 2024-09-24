@@ -51,6 +51,15 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
+Common annotations
+*/}}
+{{- define "portkeyenterprise.annotations" -}}
+{{- with .Values.service.annotations }}
+{{- toYaml .}}
+{{- end }}
+{{- end }}
+
+{{/*
 Create the name of the service account to use
 */}}
 {{- define "portkeyenterprise.serviceAccountName" -}}
@@ -60,6 +69,14 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{- define "dataservice.serviceAccountName" -}}
+{{- if .Values.dataservice.serviceAccount.create -}}
+{{ default (printf "%s-%s" (include "portkeyenterprise.fullname" .) .Values.dataservice.name) .Values.dataservice.serviceAccount.name | trunc 63 | trimSuffix "-" }}
+{{- else -}}
+{{ default "default" .Values.dataservice.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
 
 
 {{/*
