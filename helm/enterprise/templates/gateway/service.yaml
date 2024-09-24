@@ -17,6 +17,6 @@ spec:
     - port: {{ .Values.service.port }}
       targetPort: 8787
       protocol: TCP
-      name: "portkey"
+      name: gateway
   selector:
     {{- include "portkeyenterprise.selectorLabels" . | nindent 4 }}

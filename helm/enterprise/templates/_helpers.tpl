@@ -114,3 +114,22 @@ Vault Environment Variables
       key: {{ $key }}
 {{- end }}
 {{- end }}
+
+{{/*
+Common Environment Env
+*/}}
+{{- define "portkeyenterprise.commonEnv" -}}
+{{- if .Values.environment.create }}
+{{- range $key, $value := .Values.environment.data }}
+  - name: {{ $key }}
+    valueFrom:
+      {{- if $.Values.environment.secret }}
+      secretKeyRef:
+      {{- else }}
+      configMapKeyRef:
+      {{- end }}
+        name: {{ include "portkeyenterprise.fullname" $ }}
+        key: {{ $key }}
+{{- end }}
+{{- end }}
+{{- end }}
