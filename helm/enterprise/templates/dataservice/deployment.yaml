@@ -6,12 +6,12 @@ metadata:
   labels:
     {{- include "portkeyenterprise.labels" . | nindent 4 }}
     {{- with .Values.dataservice.deployment.labels }}
-      {{- toYaml . | nindent 4 }}
+    {{- toYaml . | nindent 4 }}
     {{- end }}
   annotations:
     {{- include "portkeyenterprise.annotations" . | nindent 4 }}
     {{- with .Values.dataservice.deployment.annotations }}
-      {{- toYaml . | nindent 4 }}
+    {{- toYaml . | nindent 4 }}
     {{- end }}
 spec:
   {{- if not .Values.dataservice.autoscaling.enabled }}
@@ -41,7 +41,6 @@ spec:
       {{- range .Values.imageCredentials }}
       - name: {{ .name }}
       {{- end }}
-
       securityContext:
         {{- toYaml .Values.dataservice.deployment.podSecurityContext | nindent 8 }}
       serviceAccountName: {{ include "dataservice.serviceAccountName" . }}
@@ -59,10 +58,6 @@ spec:
             {{- include "portkeyenterprise.commonEnv" . | nindent 12 }}
           {{- end }}
           {{- end }}
-            - name: PORT
-              value: {{ .Values.dataservice.containerPort | quote }}
-            - name: SERVICE_NAME
-              value: {{ include "portkeyenterprise.fullname" . }}-{{ .Values.dataservice.name }}
           image: "{{ .Values.images.dataserviceImage.repository }}:{{ .Values.images.dataserviceImage.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.images.dataserviceImage.pullPolicy }}
           ports:
