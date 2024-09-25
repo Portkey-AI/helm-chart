@@ -150,3 +150,341 @@ Common Environment Env
 {{- end }}
 {{- end }}
 {{- end }}
+
+{{- define "logStore.commonEnv" -}}
+{{- if .Values.environment.create }}
+- name: LOG_STORE
+  valueFrom:
+    {{- if $.Values.environment.secret }}
+      secretKeyRef:
+      {{- else }}
+      configMapKeyRef:
+      {{- end }}
+        name: {{ include "portkeyenterprise.fullname" $ }}
+        key: LOG_STORE
+- name: MONGO_DB_CONNECTION_URL
+  valueFrom:
+    {{- if $.Values.environment.secret }}
+      secretKeyRef:
+      {{- else }}
+      configMapKeyRef:
+      {{- end }}
+        name: {{ include "portkeyenterprise.fullname" $ }}
+        key: MONGO_DB_CONNECTION_URL
+- name: MONGO_DATABASE
+  valueFrom:
+    {{- if $.Values.environment.secret }}
+      secretKeyRef:
+      {{- else }}
+      configMapKeyRef:
+      {{- end }}
+        name: {{ include "portkeyenterprise.fullname" $ }}
+        key: MONGO_DATABASE
+- name: MONGO_COLLECTION_NAME
+  valueFrom:
+    {{- if $.Values.environment.secret }}
+      secretKeyRef:
+      {{- else }}
+      configMapKeyRef:
+      {{- end }}
+        name: {{ include "portkeyenterprise.fullname" $ }}
+        key: MONGO_COLLECTION_NAME
+- name: MONGO_GENERATION_HOOKS_COLLECTION_NAME
+  valueFrom:
+    {{- if $.Values.environment.secret }}
+      secretKeyRef:
+      {{- else }}
+      configMapKeyRef:
+      {{- end }}
+        name: {{ include "portkeyenterprise.fullname" $ }}
+        key: MONGO_GENERATION_HOOKS_COLLECTION_NAME
+- name: LOG_STORE_ACCESS_KEY
+  valueFrom:
+    {{- if $.Values.environment.secret }}
+      secretKeyRef:
+      {{- else }}
+      configMapKeyRef:
+      {{- end }}
+        name: {{ include "portkeyenterprise.fullname" $ }}
+        key: LOG_STORE_ACCESS_KEY
+- name: LOG_STORE_SECRET_KEY
+  valueFrom:
+    {{- if $.Values.environment.secret }}
+      secretKeyRef:
+      {{- else }}
+      configMapKeyRef:
+      {{- end }}
+        name: {{ include "portkeyenterprise.fullname" $ }}
+        key: LOG_STORE_SECRET_KEY
+- name: LOG_STORE_REGION
+  valueFrom:
+    {{- if $.Values.environment.secret }}
+      secretKeyRef:
+      {{- else }}
+      configMapKeyRef:
+      {{- end }}
+        name: {{ include "portkeyenterprise.fullname" $ }}
+        key: LOG_STORE_REGION
+- name: LOG_STORE_GENERATIONS_BUCKET
+  valueFrom:
+    {{- if $.Values.environment.secret }}
+      secretKeyRef:
+      {{- else }}
+      configMapKeyRef:
+      {{- end }}
+        name: {{ include "portkeyenterprise.fullname" $ }}
+        key: LOG_STORE_GENERATIONS_BUCKET
+- name: LOG_STORE_BASEPATH
+  valueFrom:
+    {{- if $.Values.environment.secret }}
+      secretKeyRef:
+      {{- else }}
+      configMapKeyRef:
+      {{- end }}
+        name: {{ include "portkeyenterprise.fullname" $ }}
+        key: LOG_STORE_BASEPATH
+- name: LOG_STORE_AWS_ROLE_ARN
+  valueFrom:
+    {{- if $.Values.environment.secret }}
+      secretKeyRef:
+      {{- else }}
+      configMapKeyRef:
+      {{- end }}
+        name: {{ include "portkeyenterprise.fullname" $ }}
+        key: LOG_STORE_AWS_ROLE_ARN
+- name: LOG_STORE_AWS_EXTERNAL_ID
+  valueFrom:
+    {{- if $.Values.environment.secret }}
+      secretKeyRef:
+      {{- else }}
+      configMapKeyRef:
+      {{- end }}
+        name: {{ include "portkeyenterprise.fullname" $ }}
+        key: LOG_STORE_AWS_EXTERNAL_ID
+- name: AZURE_AUTH_MODE
+  valueFrom:
+    {{- if $.Values.environment.secret }}
+      secretKeyRef:
+      {{- else }}
+      configMapKeyRef:
+      {{- end }}
+        name: {{ include "portkeyenterprise.fullname" $ }}
+        key: AZURE_AUTH_MODE
+- name: AZURE_STORAGE_ACCOUNT
+  valueFrom:
+    {{- if $.Values.environment.secret }}
+      secretKeyRef:
+      {{- else }}
+      configMapKeyRef:
+      {{- end }}
+        name: {{ include "portkeyenterprise.fullname" $ }}
+        key: AZURE_STORAGE_ACCOUNT
+- name: AZURE_STORAGE_KEY
+  valueFrom:
+    {{- if $.Values.environment.secret }}
+      secretKeyRef:
+      {{- else }}
+      configMapKeyRef:
+      {{- end }}
+        name: {{ include "portkeyenterprise.fullname" $ }}
+        key: AZURE_STORAGE_KEY
+- name: AZURE_STORAGE_CONTAINER
+  valueFrom:
+    {{- if $.Values.environment.secret }}
+      secretKeyRef:
+      {{- else }}
+      configMapKeyRef:
+      {{- end }}
+        name: {{ include "portkeyenterprise.fullname" $ }}
+        key: AZURE_STORAGE_CONTAINER
+{{- end }}
+{{- end }}
+
+{{- define "analyticStore.commonEnv" -}}
+{{- if .Values.environment.create }}
+- name: ANALYTICS_STORE
+  valueFrom:
+    {{- if $.Values.environment.secret }}
+      secretKeyRef:
+      {{- else }}
+      configMapKeyRef:
+      {{- end }}
+        name: {{ include "portkeyenterprise.fullname" $ }}
+        key: ANALYTICS_STORE
+- name: ANALYTICS_STORE_ENDPOINT
+  valueFrom:
+    {{- if $.Values.environment.secret }}
+      secretKeyRef:
+      {{- else }}
+      configMapKeyRef:
+      {{- end }}
+        name: {{ include "portkeyenterprise.fullname" $ }}
+        key: ANALYTICS_STORE_ENDPOINT
+- name: ANALYTICS_STORE_USER
+  valueFrom:
+    {{- if $.Values.environment.secret }}
+      secretKeyRef:
+      {{- else }}
+      configMapKeyRef:
+      {{- end }}
+        name: {{ include "portkeyenterprise.fullname" $ }}
+        key: ANALYTICS_STORE_USER
+- name: ANALYTICS_STORE_PASSWORD
+  valueFrom:
+    {{- if $.Values.environment.secret }}
+      secretKeyRef:
+      {{- else }}
+      configMapKeyRef:
+      {{- end }}
+        name: {{ include "portkeyenterprise.fullname" $ }}
+        key: ANALYTICS_STORE_PASSWORD
+- name: ANALYTICS_LOG_TABLE
+  valueFrom:
+    {{- if $.Values.environment.secret }}
+      secretKeyRef:
+      {{- else }}
+      configMapKeyRef:
+      {{- end }}
+        name: {{ include "portkeyenterprise.fullname" $ }}
+        key: ANALYTICS_LOG_TABLE
+- name: ANALYTICS_FEEDBACK_TABLE
+  valueFrom:
+    {{- if $.Values.environment.secret }}
+      secretKeyRef:
+      {{- else }}
+      configMapKeyRef:
+      {{- end }}
+        name: {{ include "portkeyenterprise.fullname" $ }}
+        key: ANALYTICS_FEEDBACK_TABLE
+{{- end }}
+{{- end }}
+
+{{- define "cacheStore.commonEnv" -}}
+{{- if .Values.environment.create }}
+- name: CACHE_STORE
+  valueFrom:
+    {{- if $.Values.environment.secret }}
+      secretKeyRef:
+      {{- else }}
+      configMapKeyRef:
+      {{- end }}
+        name: {{ include "portkeyenterprise.fullname" $ }}
+        key: CACHE_STORE
+- name: REDIS_URL
+  valueFrom:
+    {{- if $.Values.environment.secret }}
+      secretKeyRef:
+      {{- else }}
+      configMapKeyRef:
+      {{- end }}
+        name: {{ include "portkeyenterprise.fullname" $ }}
+        key: REDIS_URL
+- name: REDIS_TLS_ENABLED
+  valueFrom:
+    {{- if $.Values.environment.secret }}
+      secretKeyRef:
+      {{- else }}
+      configMapKeyRef:
+      {{- end }}
+        name: {{ include "portkeyenterprise.fullname" $ }}
+        key: REDIS_TLS_ENABLED
+- name: REDIS_MODE
+  valueFrom:
+    {{- if $.Values.environment.secret }}
+      secretKeyRef:
+      {{- else }}
+      configMapKeyRef:
+      {{- end }}
+        name: {{ include "portkeyenterprise.fullname" $ }}
+        key: REDIS_MODE
+{{- end }}
+{{- end }}
+
+{{- define "controlPlane.commonEnv" -}}
+{{- if .Values.environment.create }}
+- name: PORTKEY_CLIENT_AUTH
+  valueFrom:
+    {{- if $.Values.environment.secret }}
+      secretKeyRef:
+      {{- else }}
+      configMapKeyRef:
+      {{- end }}
+        name: {{ include "portkeyenterprise.fullname" $ }}
+        key: PORTKEY_CLIENT_AUTH
+- name: ORGANISATIONS_TO_SYNC
+  valueFrom:
+    {{- if $.Values.environment.secret }}
+      secretKeyRef:
+      {{- else }}
+      configMapKeyRef:
+      {{- end }}
+        name: {{ include "portkeyenterprise.fullname" $ }}
+        key: ORGANISATIONS_TO_SYNC
+{{- end }}
+{{- end }}
+
+# Data Service Env
+{{- define "dataservice.commonEnv" -}}
+- name: ALBUS_ENDPOINT
+  value: "https://albus.portkey.ai"
+- name: NODE_ENV
+  value: "production"
+- name: HYBRID_DEPLOYMENT
+  value: "ON"
+{{- if .Values.environment.create }}
+- name: CLICKHOUSE_HOST
+  valueFrom:
+    {{- if $.Values.environment.secret }}
+      secretKeyRef:
+      {{- else }}
+      configMapKeyRef:
+      {{- end }}
+        name: {{ include "portkeyenterprise.fullname" $ }}
+        key: ANALYTICS_STORE_ENDPOINT
+- name: CLICKHOUSE_USER
+  valueFrom:
+    {{- if $.Values.environment.secret }}
+      secretKeyRef:
+      {{- else }}
+      configMapKeyRef:
+      {{- end }}
+        name: {{ include "portkeyenterprise.fullname" $ }}
+        key: ANALYTICS_STORE_USER
+- name: CLICKHOUSE_PASSWORD
+  valueFrom:
+    {{- if $.Values.environment.secret }}
+      secretKeyRef:
+      {{- else }}
+      configMapKeyRef:
+      {{- end }}
+        name: {{ include "portkeyenterprise.fullname" $ }}
+        key: ANALYTICS_STORE_PASSWORD
+- name: ANALYTICS_LOG_TABLE
+  valueFrom:
+    {{- if $.Values.environment.secret }}
+      secretKeyRef:
+      {{- else }}
+      configMapKeyRef:
+      {{- end }}
+        name: {{ include "portkeyenterprise.fullname" $ }}
+        key: ANALYTICS_LOG_TABLE
+- name: FINETUNES_BUCKET
+  valueFrom:
+    {{- if $.Values.environment.secret }}
+      secretKeyRef:
+      {{- else }}
+      configMapKeyRef:
+      {{- end }}
+        name: {{ include "portkeyenterprise.fullname" $ }}
+        key: FINETUNES_BUCKET
+- name: LOG_EXPORTS_BUCKET
+  valueFrom:
+    {{- if $.Values.environment.secret }}
+      secretKeyRef:
+      {{- else }}
+      configMapKeyRef:
+      {{- end }}
+        name: {{ include "portkeyenterprise.fullname" $ }}
+        key: LOG_EXPORTS_BUCKET
+{{- end }}
+{{- end }}

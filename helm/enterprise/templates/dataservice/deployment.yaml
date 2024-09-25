@@ -51,13 +51,10 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           env:
-          {{- if .Values.useVaultInjection }}
-            {{- include "portkeyenterprise.vaultEnv" . | nindent 12 }}
-          {{- else }}
-          {{- if .Values.environment.create }}              
-            {{- include "portkeyenterprise.commonEnv" . | nindent 12 }}
-          {{- end }}
-          {{- end }}
+            {{- include "dataservice.commonEnv" . | nindent 12 }}
+            {{- include "controlPlane.commonEnv" . | nindent 12 }}
+            {{- include "cacheStore.commonEnv" . | nindent 12 }}
+            {{- include "logStore.commonEnv" . | nindent 12 }}
           image: "{{ .Values.images.dataserviceImage.repository }}:{{ .Values.images.dataserviceImage.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.images.dataserviceImage.pullPolicy }}
           ports:
