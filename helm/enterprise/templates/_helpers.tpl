@@ -431,6 +431,8 @@ Common Environment Env
   value: "production"
 - name: HYBRID_DEPLOYMENT
   value: "ON"
+- name: AWS_ROLE_ARN
+  value: {{.Values.environment.data.FINETUNES_AWS_ROLE_ARN}}
 {{- if .Values.environment.create }}
 - name: CLICKHOUSE_HOST
   valueFrom:
@@ -469,6 +471,15 @@ Common Environment Env
         name: {{ include "portkeyenterprise.fullname" $ }}
         key: ANALYTICS_LOG_TABLE
 - name: FINETUNES_BUCKET
+  valueFrom:
+    {{- if $.Values.environment.secret }}
+      secretKeyRef:
+      {{- else }}
+      configMapKeyRef:
+      {{- end }}
+        name: {{ include "portkeyenterprise.fullname" $ }}
+        key: FINETUNES_BUCKET
+- name: AWS_S3_FINETUNE_BUCKET
   valueFrom:
     {{- if $.Values.environment.secret }}
       secretKeyRef:
