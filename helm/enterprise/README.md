@@ -288,3 +288,18 @@ Uninstall the chart:
 Optional tunneling port (for local testing)
 
     kubectl port-forward <kubectl-pod> -n portkeyai 8787:8787
+
+# Data Service
+To enable data service, please update `dataservice`>`enabled` to `true`
+
+Please note that we use same `LOG_STORE` as the one for gateway. Other Log Store Details are same as Gateway. 
+
+The following keys are mandatory
+```
+FINETUNES_BUCKET
+FINETUNES_AWS_ROLE_ARN
+```
+
+## Finetunes
+For more details on finetune, referer to [DataService](DataService.md)
+### P.s: Currently only S3 as data store is supported for finetuning.
