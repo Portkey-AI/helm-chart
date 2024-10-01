@@ -55,13 +55,7 @@ spec:
               - name: DATASERVICE_BASEPATH
                 value: http://{{ include "portkeyenterprise.fullname" . }}-{{ .Values.dataservice.name }}:{{ .Values.dataservice.containerPort }}
             {{- end }}
-          {{- if .Values.useVaultInjection }}
-            {{- include "portkeyenterprise.vaultEnv" . | nindent 12 }}
-          {{- else }}
-          {{- if .Values.environment.create }}              
             {{- include "portkeyenterprise.commonEnv" . | nindent 12 }}
-          {{- end }}
-          {{- end }}
           livenessProbe:
             {{- toYaml .Values.livenessProbe | nindent 12 }}
           readinessProbe:
