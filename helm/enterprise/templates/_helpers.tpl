@@ -159,111 +159,80 @@ Common Environment Env as Map
 {{- define "portkeyenterprise.commonEnvMap" -}}
 {{- $envMap := dict -}}
 {{- if .Values.useVaultInjection }}
-  {{- include "portkeyenterprise.vaultEnv" .}}
-{{- end }}
-{{- if .Values.environment.create }}
+  {{- include "portkeyenterprise.vaultEnv" . | fromYaml | merge $envMap -}}
+{{- else if .Values.environment.create }}
   {{- range $key, $value := .Values.environment.data }}
-    {{- $_ := set $envMap $key $value -}}
+    {{- $envValue := dict -}}
+    {{- if $.Values.environment.secret }}
+      {{- $_ := set $envValue "valueFrom" (dict "secretKeyRef" (dict "name" (include "portkeyenterprise.fullname" $) "key" $key)) -}}
+    {{- else }}
+      {{- $_ := set $envValue "valueFrom" (dict "configMapKeyRef" (dict "name" (include "portkeyenterprise.fullname" $) "key" $key)) -}}
+    {{- end }}
+    {{- $_ := set $envMap $key $envValue -}}
   {{- end }}
 {{- end }}
-{{- toYaml $envMap -}}
+{{- $envMap | toYaml -}}
+{{- end }}
+
+{{- define "portkeyenterprise.renderEnvVar" -}}
+{{- $name := index . 0 -}}
+{{- $value := index . 1 -}}
+- name: {{ $name }}
+{{- if kindIs "map" $value }}
+  {{- toYaml $value | nindent 2 }}
+{{- else }}
+  value: {{ $value | quote }}
+{{- end }}
 {{- end }}
 
 {{- define "logStore.commonEnv" -}}
-{{- $allCommonEnv := include "portkeyenterprise.commonEnvMap" . | fromYaml -}}
-- name: LOG_STORE
-  value: {{ $allCommonEnv.LOG_STORE | quote  }}
-- name: MONGO_DB_CONNECTION_URL
-  value: {{ $allCommonEnv.MONGO_DB_CONNECTION_URL | quote }}
-- name: MONGO_DATABASE
-  value: {{ $allCommonEnv.MONGO_DATABASE | quote }}
-- name: MONGO_COLLECTION_NAME
-  value: {{ $allCommonEnv.MONGO_COLLECTION_NAME | quote }}
-- name: MONGO_GENERATION_HOOKS_COLLECTION_NAME
-  value: {{ $allCommonEnv.MONGO_GENERATION_HOOKS_COLLECTION_NAME | quote }}
-- name: LOG_STORE_ACCESS_KEY
-  value: {{ $allCommonEnv.LOG_STORE_ACCESS_KEY | quote }}
-- name: LOG_STORE_SECRET_KEY
-  value: {{ $allCommonEnv.LOG_STORE_SECRET_KEY | quote }}
-- name: LOG_STORE_REGION
-  value: {{ $allCommonEnv.LOG_STORE_REGION | quote }}
-- name: LOG_STORE_GENERATIONS_BUCKET
-  value: {{ $allCommonEnv.LOG_STORE_GENERATIONS_BUCKET | quote }}
-- name: LOG_STORE_BASEPATH
-  value: {{ $allCommonEnv.LOG_STORE_BASEPATH | quote }}
-- name: LOG_STORE_AWS_ROLE_ARN
-  value: {{ $allCommonEnv.LOG_STORE_AWS_ROLE_ARN | quote }}
-- name: LOG_STORE_AWS_EXTERNAL_ID
-  value: {{ $allCommonEnv.LOG_STORE_AWS_EXTERNAL_ID | quote }}
-- name: AZURE_AUTH_MODE
-  value: {{ $allCommonEnv.AZURE_AUTH_MODE | quote }}
-- name: AZURE_STORAGE_ACCOUNT
-  value: {{ $allCommonEnv.AZURE_STORAGE_ACCOUNT | quote }}
-- name: AZURE_STORAGE_KEY
-  value: {{ $allCommonEnv.AZURE_STORAGE_KEY | quote }}
-- name: AZURE_STORAGE_CONTAINER
-  value: {{ $allCommonEnv.AZURE_STORAGE_CONTAINER | quote }}
+{{- $commonEnv := include "portkeyenterprise.commonEnvMap" . | fromYaml -}}
+{{- range $key, $value := $commonEnv }}
+{{- if has $key (list "LOG_STORE" "MONGO_DB_CONNECTION_URL" "MONGO_DATABASE" "MONGO_COLLECTION_NAME" "MONGO_GENERATION_HOOKS_COLLECTION_NAME" "LOG_STORE_ACCESS_KEY" "LOG_STORE_SECRET_KEY" "LOG_STORE_REGION" "LOG_STORE_GENERATIONS_BUCKET" "LOG_STORE_BASEPATH" "LOG_STORE_AWS_ROLE_ARN" "LOG_STORE_AWS_EXTERNAL_ID" "AZURE_AUTH_MODE" "AZURE_STORAGE_ACCOUNT" "AZURE_STORAGE_KEY" "AZURE_STORAGE_CONTAINER") }}
+{{- include "portkeyenterprise.renderEnvVar" (list $key $value) | nindent 0 }}
+{{- end }}
+{{- end }}
 {{- end }}
 
 {{- define "analyticStore.commonEnv" -}}
-{{- $allCommonEnv := include "portkeyenterprise.commonEnvMap" . | fromYaml -}}
-- name: ANALYTICS_STORE
-  value: {{ $allCommonEnv.ANALYTICS_STORE | quote }}
-- name: ANALYTICS_STORE_ENDPOINT
-  value: {{ $allCommonEnv.ANALYTICS_STORE_ENDPOINT | quote }}
-- name: ANALYTICS_STORE_USER
-  value: {{ $allCommonEnv.ANALYTICS_STORE_USER | quote }}
-- name: ANALYTICS_STORE_PASSWORD
-  value: {{ $allCommonEnv.ANALYTICS_STORE_PASSWORD | quote }}
-- name: ANALYTICS_LOG_TABLE
-  value: {{ $allCommonEnv.ANALYTICS_LOG_TABLE | quote }}
-- name: ANALYTICS_FEEDBACK_TABLE
-  value: {{ $allCommonEnv.ANALYTICS_FEEDBACK_TABLE | quote }}
+{{- $commonEnv := include "portkeyenterprise.commonEnvMap" . | fromYaml -}}
+{{- range $key, $value := $commonEnv }}
+{{- if has $key (list "ANALYTICS_STORE" "ANALYTICS_STORE_ENDPOINT" "ANALYTICS_STORE_USER" "ANALYTICS_STORE_PASSWORD" "ANALYTICS_LOG_TABLE" "ANALYTICS_FEEDBACK_TABLE") }}
+{{- include "portkeyenterprise.renderEnvVar" (list $key $value) | nindent 0 }}
+{{- end }}
+{{- end }}
 {{- end }}
 
 {{- define "cacheStore.commonEnv" -}}
-{{- $allCommonEnv := include "portkeyenterprise.commonEnvMap" . | fromYaml -}}
-- name: CACHE_STORE
-  value: {{ $allCommonEnv.CACHE_STORE | quote }}
-- name: REDIS_URL
-  value: {{ $allCommonEnv.REDIS_URL | quote }}
-- name: REDIS_TLS_ENABLED
-  value: {{ $allCommonEnv.REDIS_TLS_ENABLED | quote }}
-- name: REDIS_MODE
-  value: {{ $allCommonEnv.REDIS_MODE | quote }}
+{{- $commonEnv := include "portkeyenterprise.commonEnvMap" . | fromYaml -}}
+{{- range $key, $value := $commonEnv }}
+{{- if has $key (list "CACHE_STORE" "REDIS_URL" "REDIS_TLS_ENABLED" "REDIS_MODE") }}
+{{- include "portkeyenterprise.renderEnvVar" (list $key $value) | nindent 0 }}
+{{- end }}
+{{- end }}
 {{- end }}
 
 {{- define "controlPlane.commonEnv" -}}
-{{- $allCommonEnv := include "portkeyenterprise.commonEnvMap" . | fromYaml -}}
-- name: PORTKEY_CLIENT_AUTH
-  value: {{ $allCommonEnv.PORTKEY_CLIENT_AUTH | quote }}
-- name: ORGANISATIONS_TO_SYNC
-  value: {{ $allCommonEnv.ORGANISATIONS_TO_SYNC | quote }}
+{{- $commonEnv := include "portkeyenterprise.commonEnvMap" . | fromYaml -}}
+{{- range $key, $value := $commonEnv }}
+{{- if has $key (list "PORTKEY_CLIENT_AUTH" "ORGANISATIONS_TO_SYNC") }}
+{{- include "portkeyenterprise.renderEnvVar" (list $key $value) | nindent 0 }}
+{{- end }}
+{{- end }}
 {{- end }}
 
-# Data Service Env
 {{- define "dataservice.commonEnv" -}}
-{{- $allCommonEnv := include "portkeyenterprise.commonEnvMap" . | fromYaml -}}
-- name: ALBUS_ENDPOINT
-  value: "https://albus.portkey.ai"
-- name: NODE_ENV
-  value: "production"
-- name: HYBRID_DEPLOYMENT
-  value: "ON"
-- name: CLICKHOUSE_HOST
-  value: {{ $allCommonEnv.ANALYTICS_STORE_ENDPOINT | quote }}
-- name: CLICKHOUSE_USER
-  value: {{ $allCommonEnv.ANALYTICS_STORE_USER | quote }}
-- name: CLICKHOUSE_PASSWORD
-  value: {{ $allCommonEnv.ANALYTICS_STORE_PASSWORD | quote }}
-- name: ANALYTICS_LOG_TABLE
-  value: {{ $allCommonEnv.ANALYTICS_LOG_TABLE | quote }}
-- name: FINETUNES_BUCKET
-  value: {{ $allCommonEnv.FINETUNES_BUCKET | quote }}
-- name: AWS_S3_FINETUNE_BUCKET
-  value: {{ $allCommonEnv.FINETUNES_BUCKET | quote }}
-- name: AWS_ROLE_ARN
-  value: {{ $allCommonEnv.AWS_ROLE_ARN | quote }}
-- name: LOG_EXPORTS_BUCKET
-  value: {{ $allCommonEnv.LOG_EXPORTS_BUCKET | quote }}
+{{- $commonEnv := include "portkeyenterprise.commonEnvMap" . | fromYaml -}}
+{{- include "portkeyenterprise.renderEnvVar" (list "ALBUS_ENDPOINT" "https://albus.portkey.ai") | nindent 0 }}
+{{- include "portkeyenterprise.renderEnvVar" (list "NODE_ENV" "production") | nindent 0 }}
+{{- include "portkeyenterprise.renderEnvVar" (list "HYBRID_DEPLOYMENT" "ON") | nindent 0 }}
+{{- range $key, $value := $commonEnv }}
+{{- if has $key (list "ANALYTICS_STORE_ENDPOINT" "ANALYTICS_STORE_USER" "ANALYTICS_STORE_PASSWORD" "ANALYTICS_LOG_TABLE" "FINETUNES_BUCKET" "AWS_ROLE_ARN" "LOG_EXPORTS_BUCKET") }}
+{{- include "portkeyenterprise.renderEnvVar" (list $key $value) | nindent 0 }}
+{{- end }}
+{{- end }}
+{{- include "portkeyenterprise.renderEnvVar" (list "CLICKHOUSE_HOST" ($commonEnv.ANALYTICS_STORE_ENDPOINT)) | nindent 0 }}
+{{- include "portkeyenterprise.renderEnvVar" (list "CLICKHOUSE_USER" ($commonEnv.ANALYTICS_STORE_USER)) | nindent 0 }}
+{{- include "portkeyenterprise.renderEnvVar" (list "CLICKHOUSE_PASSWORD" ($commonEnv.ANALYTICS_STORE_PASSWORD)) | nindent 0 }}
+{{- include "portkeyenterprise.renderEnvVar" (list "AWS_S3_FINETUNE_BUCKET" ($commonEnv.FINETUNES_BUCKET)) | nindent 0 }}
 {{- end }}
