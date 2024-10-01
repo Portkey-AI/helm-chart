@@ -172,7 +172,7 @@ Common Environment Env as Map
 {{- define "logStore.commonEnv" -}}
 {{- $allCommonEnv := include "portkeyenterprise.commonEnvMap" . | fromYaml -}}
 - name: LOG_STORE
-  valueFrom: {{ $allCommonEnv.LOG_STORE | quote  }}
+  value: {{ $allCommonEnv.LOG_STORE | quote  }}
 - name: MONGO_DB_CONNECTION_URL
   value: {{ $allCommonEnv.MONGO_DB_CONNECTION_URL | quote }}
 - name: MONGO_DATABASE
