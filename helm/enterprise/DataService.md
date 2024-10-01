@@ -28,6 +28,7 @@ To start a fine-tune job, follow these steps:
 5. Update finetune with the dataset ID
 6. Start dataset validation
 7. Start finetune
+8. Cancel Finetune (if Needed)
 
 
 > Note: 
