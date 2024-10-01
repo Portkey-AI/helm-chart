@@ -21,13 +21,13 @@ The above document describes the architecture of a hydrid data service system.
 ## Fine-tuning Process
 To start a fine-tune job, follow these steps:
 
-Create a Dataset
-Upload File to S3 (optional if file is already in S3)
-Update the dataset with the uploaded S3 Key
-Create Finetune
-Update finetune with the dataset ID
-Start dataset validation
-Start finetune
+1. Create a Dataset
+2. Upload File to S3 (optional if file is already in S3)
+3. Update the dataset with the uploaded S3 Key
+4. Create Finetune
+5. Update finetune with the dataset ID
+6. Start dataset validation
+7. Start finetune
 
 
 > Note: 
