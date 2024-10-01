@@ -4,11 +4,15 @@
 
 replicaCount: 1
 
-image:
-  repository: portkeyai/gateway_enterprise
-  pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: "1.7.0"
+images:
+  gatewayImage:
+    repository: "docker.io/portkeyai/gateway_enterprise"
+    pullPolicy: IfNotPresent
+    tag: "1.7.1"
+  dataserviceImage:
+    repository: "docker.io/portkeyai/data-service"
+    pullPolicy: IfNotPresent
+    tag: "latest"
 
 imagePullSecrets: [portkeyenterpriseregistrycredentials]
 nameOverride: ""
@@ -39,7 +43,8 @@ environment:
     LOG_STORE: 
     MONGO_DB_CONNECTION_URL: 
     MONGO_DATABASE: 
-    MONGO_COLLECTION_NAME: 
+    MONGO_COLLECTION_NAME:
+    MONGO_GENERATIONS_HOOKS_COLLECTION_NAME:
     LOG_STORE_REGION: 
     LOG_STORE_ACCESS_KEY: 
     LOG_STORE_SECRET_KEY: 
@@ -67,6 +72,9 @@ environment:
     REDIS_MODE: 
     PORTKEY_CLIENT_AUTH: 
     ORGANISATIONS_TO_SYNC: 
+    FINETUNES_BUCKET: 
+    LOG_EXPORTS_BUCKET: 
+    FINETUNES_AWS_ROLE_ARN: 
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -167,3 +175,64 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+dataservice:
+  name: "dataservice"
+  enabled: false
+  containerPort: 8081
+  finetuneBucket: ""
+  logexportsBucket: ""
+  deployment:
+    autoRestart: true
+    replicas: 1
+    labels: {}
+    annotations: {}
+    podSecurityContext: {}
+    securityContext: {}
+    resources: {}
+    startupProbe:
+      httpGet:
+        path: /health
+        port: 8081
+      initialDelaySeconds: 60
+      failureThreshold: 3
+      periodSeconds: 10
+      timeoutSeconds: 1
+    livenessProbe:
+      httpGet:
+        path: /health
+        port: 8081
+      failureThreshold: 3
+      periodSeconds: 10
+      timeoutSeconds: 1
+    readinessProbe:
+      httpGet:
+        path: /health
+        port: 8081
+      failureThreshold: 3
+      periodSeconds: 10
+      timeoutSeconds: 1
+    extraContainerConfig: {}
+    nodeSelector: {}
+    tolerations: []
+    affinity: {}
+    volumes: []
+    volumeMounts: []
+  service:
+    type: ClusterIP
+    port: 8081
+    labels: {}
+    annotations: {}
+    loadBalancerSourceRanges: []
+    loadBalancerIP: ""
+  serviceAccount:
+    create: true
+    name: ""
+    labels: {}
+    annotations: {}
+  autoscaling:
+    enabled: false
+    createHpa: false
+    minReplicas: 1
+    maxReplicas: 5
+    targetCPUUtilizationPercentage: 80

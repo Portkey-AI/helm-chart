@@ -7,16 +7,14 @@ metadata:
     {{- with .Values.service.additionalLabels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
-  {{- with .Values.service.annotations }}
   annotations:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
+    {{- include "portkeyenterprise.annotations" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
       targetPort: 8787
       protocol: TCP
-      name: "portkey"
+      name: gateway
   selector:
     {{- include "portkeyenterprise.selectorLabels" . | nindent 4 }}

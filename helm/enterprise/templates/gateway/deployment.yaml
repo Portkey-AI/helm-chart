@@ -44,27 +44,18 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: "{{ .Values.images.gatewayImage.repository }}:{{ .Values.images.gatewayImage.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.images.gatewayImage.pullPolicy }}
           ports:
-            - name: "portkey"
+            - name: "gateway"
               containerPort: {{ .Values.service.port }}
               protocol: TCP
-          {{- if .Values.useVaultInjection }}
           env:
-            {{- include "portkeyenterprise.vaultEnv" . | nindent 12 }}
-          {{- else }}
-          {{- if .Values.environment.create }}              
-          envFrom:
-          {{- if .Values.environment.secret }}
-          - secretRef:
-              name: {{ include "portkeyenterprise.fullname" . }}
-          {{- else }}
-          - configMapRef:
-              name: {{ include "portkeyenterprise.fullname" . }}
-          {{- end }}
-          {{- end }}
-          {{- end }}
+            {{- if .Values.dataservice.enabled }}
+              - name: DATASERVICE_BASEPATH
+                value: http://{{ include "portkeyenterprise.fullname" . }}-{{ .Values.dataservice.name }}:{{ .Values.dataservice.containerPort }}
+            {{- end }}
+            {{- include "portkeyenterprise.commonEnv" . | nindent 12 }}
           livenessProbe:
             {{- toYaml .Values.livenessProbe | nindent 12 }}
           readinessProbe:
