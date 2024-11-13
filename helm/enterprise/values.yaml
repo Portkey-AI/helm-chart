@@ -19,14 +19,14 @@ nameOverride: ""
 fullnameOverride: ""
 
 imageCredentials:
-  - name: portkeyenterpriseregistrycredentials
-    create: true
-    registry: https://index.docker.io/v1/
-    username: <docker-user>
-    password: <docker-pwd>
-    email: ""  # Optional
-    # Or use direct auth token
-    auth: ""  # Base64 encoded auth token
+- name: portkeyenterpriseregistrycredentials
+  create: true
+  registry: https://index.docker.io/v1/
+  username: <docker-user>
+  password: <docker-pwd>
+  email: ""  # Optional
+  # Or use direct auth token
+  auth: ""  # Base64 encoded auth token
 
 useVaultInjection: false  # Set this to true to use Vault injection
 
