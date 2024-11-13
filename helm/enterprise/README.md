@@ -10,7 +10,7 @@ Update the following details in `values.yaml`
 imageCredentials:
 - name: portkeyenterpriseregistrycredentials
   create: true
-  registry: kubernetes.io/dockerconfigjson
+  registry: https://index.docker.io/v1/
   username: <docker-user>
   password: <docker-pwd>
 ```
