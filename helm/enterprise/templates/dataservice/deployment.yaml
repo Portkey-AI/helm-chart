@@ -9,6 +9,9 @@ metadata:
     {{- toYaml . | nindent 4 }}
     {{- end }}
   annotations:
+    {{- if .Values.dataservice.deployment.autoRestart }}
+      rollme: {{ randAlphaNum 5 | quote }}
+    {{- end }}
     {{- include "portkeyenterprise.annotations" . | nindent 4 }}
     {{- with .Values.dataservice.deployment.annotations }}
     {{- toYaml . | nindent 4 }}

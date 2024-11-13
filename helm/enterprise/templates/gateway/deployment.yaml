@@ -7,8 +7,11 @@ metadata:
     {{- with .Values.service.additionalLabels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
-  {{- with .Values.service.annotations }}
   annotations:
+  {{- if .Values.autoRestart }}
+    rollme: {{ randAlphaNum 5 | quote }}
+  {{- end }}
+  {{- with .Values.service.annotations }}
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
@@ -20,8 +23,11 @@ spec:
       {{- include "portkeyenterprise.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
       annotations:
+      {{- if .Values.autoRestart }}
+        rollme: {{ randAlphaNum 5 | quote }}
+      {{- end }}
+      {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- if .Values.useVaultInjection }}
