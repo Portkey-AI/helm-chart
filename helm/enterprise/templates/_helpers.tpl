@@ -228,7 +228,11 @@ Common Environment Env as Map
 
 {{- define "dataservice.commonEnv" -}}
 {{- $commonEnv := include "portkeyenterprise.commonEnvMap" . | fromYaml -}}
+{{- if hasKey $commonEnv "ALBUS_BASEPATH" -}}
+{{- include "portkeyenterprise.renderEnvVar" (list "ALBUS_ENDPOINT" $commonEnv.ALBUS_BASEPATH) | nindent 0 }}
+{{- else -}}
 {{- include "portkeyenterprise.renderEnvVar" (list "ALBUS_ENDPOINT" "https://albus.portkey.ai") | nindent 0 }}
+{{- end -}}
 {{- include "portkeyenterprise.renderEnvVar" (list "NODE_ENV" "production") | nindent 0 }}
 {{- include "portkeyenterprise.renderEnvVar" (list "HYBRID_DEPLOYMENT" "ON") | nindent 0 }}
 {{- range $key, $value := $commonEnv }}
