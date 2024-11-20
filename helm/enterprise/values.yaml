@@ -8,11 +8,11 @@ images:
   gatewayImage:
     repository: "docker.io/portkeyai/gateway_enterprise"
     pullPolicy: IfNotPresent
-    tag: "1.7.1"
+    tag: "1.9.0"
   dataserviceImage:
     repository: "docker.io/portkeyai/data-service"
     pullPolicy: IfNotPresent
-    tag: "latest"
+    tag: "1.0.2"
 
 imagePullSecrets: [portkeyenterpriseregistrycredentials]
 nameOverride: ""
