@@ -1,38 +1,22 @@
 
-# Overview:
-## Architecture:
+## Enterprise Finetuning Docs:
+Currently finetuning is fully supported API communication only vs partial support via UI.
+Architecture:
 
 ![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXffbhrnjyEjpmgafZtZ2qZVM55G6yCRB8FHf5BbbJAa-XTM4km6mfip2OnpZ5Ts-373avnjqMONLhaJOuQpDL-3pAPx7viYRrq1W-KJicd_OIu_0tJ1aDXAnPo_NjL6h7Jd0CuhmTqMcWKOE_FoGoYzsROg?key=GSWy0RPh6CRcV4iKuzA0zQ)
 
-The above document describes the architecture of a hydrid data service system. 
+The architecture is a simple proxy service which we call from our servers to your hosted gateway which internally calls existing servers.
 
-- The gateway acts as an intermediary between control plane and deployed data service, providing a streamlined and secure method of communication.
-- The data service is only accessible from within the cluster via gateway only.
-- Gateway exposes following endpoints
-    1. v1/datasets 
-    2. v1/finetune 
-    3. v1/dataservice/datasets 
-    4. v1/dataservice/finetune
-    
-    Note: 
-    - `v1/datasets` & `v1/finetune` are exposed via API with at least `completions.write` scope.
-    - `v1/dataservice/datasets` and `v1/dataservice/finetune` are used internally by the Control Plane for communication with the data service via gateway.
-
-## Fine-tuning Process
-To start a fine-tune job, follow these steps:
-
-1. Create a Dataset
-2. Upload File to S3 (optional if file is already in S3)
-3. Update the dataset with the uploaded S3 Key
-4. Create Finetune
-5. Update finetune with the dataset ID
-6. Start dataset validation
-7. Start finetune
-8. Cancel Finetune (if Needed)
+To start a finetune job, please follow the below steps.
+Steps:
+-   Create a Dataset
+-   Upload File to S3 - optional if file is already in S3.
+-   Create Finetune Job
+We can check the status of finetune via UI regardless of the finetune provider (AWS, OpenAI or Anyscale).
+-   Cancel Finetune - if Needed.
 
 
-> Note: 
-When creating a dataset, the API returns an S3 Signed URL for file upload. Use this link to push the file to S3 before starting the fine-tune process.
+> When you create a `dataset` , API will return a S3 Signed URL to upload file to S3. We can use that link to push the file to into S3 before starting the finetune.
 
 Example cURL for each step as follows:
 ### Create Dataset
@@ -45,9 +29,8 @@ curl --request POST \
   --header 'x-portkey-api-key: <api_key>' \
   --data '{
   "name": "{{filename}}",
-  "provider": "string", #ex `openai`, `cohere` or `anyscale`
-  "model": "string" #ex `gpt-4`, `llama3.2` or `gpt-4o`,
-  "type": "training"
+  "provider": "string", #ex `openai`, `bedrock` or `anyscale`
+  "purpose": "fine-tune"
 }'
 ```
 
@@ -59,7 +42,7 @@ curl --request POST \
 	"success": true,
 	"data": {
 		"id": "string",
-		"signed_url": "string"
+		"signedUrl": "string"
 	}
 }
 ```
@@ -73,7 +56,7 @@ curl --request PUT \
   --header 'content-type: application/json' \
   --header 'x-portkey-api-key: <api_key>' \
   --data '{
-  "s3_path": "s3_key" 
+  "filename": "filename.jsonl" 
 }'
 ```
 
@@ -93,19 +76,29 @@ Create a finetune
 #### cURL:
 ```bash
 curl --request POST \
-  --url <deployed_url>/v1/finetune \
+  --url <deployed_url>/v1/fine-tuning/jobs \
   --header 'content-type: application/json' \
   --header 'x-portkey-api-key: <api_key>' \
   --data '{
-  "name":"string",
-  "virtual_key": "string",
-  "provider": "string",
-  "model": "string",
-  "hyperparameters": {
-    "epochs": 1
-  }
-}'
+	  "training_file":"{{datasetId}}",
+	  "model":"{{model}}",
+	  "provider":"{{provider}}", # bedrock, open-ai
+	  "suffix":"test-cohere-bed", # Name for finetune model
+	  "hyperparameters": {
+	    "n_epochs":1 # Epoch count.
+	  },
+	  "model_type":"text", # Model type training (or dataset), supported are `text` and `chat`.
+	  "description":"Test bedrock spec finetune with bedrock",
+	  "virtual_key":"{{virtualKey}}", # Virtual key associated with the provider
+	  "override_params": {
+	    "model":"cohere.command-light-text-v14:7:4k" # Parameters to override when sending to the provider.
+	  }
+}
+'
 ```
+
+Currently `override_params` support 3 keys i.e `model` , `model_type` `template`. `model` is being used with `bedrock` as bedrock expects a different model `modelId` for finetune than for inference. `model_type` and `template` are being used for `fireworks` these parameters are being used for differentiating the dataset values for finetune job. More on this [Here](https://docs.fireworks.ai/fine-tuning/fine-tuning-models#preparing-your-dataset)
+> For bedrock related `modelID` list, you can hit the `foundation-models` endpoint to see the list of models supported for finetuning.
 
 #### Response
 ```json
@@ -117,86 +110,27 @@ curl --request POST \
 }
 ```
 
-### Update finetune
-Now that we have created a finetune job, we have to attach the dataset to the newly created finetune to be used by job.
+The above API call will automatically starts a dataset validation job and then continues finetune progress with provider if everything seems good with dataset and it's structure.
 
-#### cURL:
-```bash
-curl --request PUT \
-  --url <deployed_url>/v1/finetune/:finetuneId \
-  --header 'content-type: application/json' \
-  --header 'x-portkey-api-key: <api_key>' \
-  --data '{
-      "training_dataset_id": "string"
-}'
-```
+> The finetuning service comes equipped with transformers that seamlessly convert OpenAI-formatted datasets into formats required by different providers. 
+- Consider Bedrock as an example - although its finetuning capabilities are centered around text-to-text models, we accept chat-formatted datasets as well. 
 
-> `trainingDatasetId` is the id of the dataset we've created in step 1.
+- Through our transformation pipeline, we ensure your data aligns perfectly with Provider's specifications. 
 
-_This endpoint can also be used to reset the status of the finetune job i.e back to original state which is useful in case of new dataset update etc._
+- This approach enables us to use one consistent dataset format that works across our supported providers.
 
-#### Response
-```json
-{
-	"success": true,
-	"data": {}
-}
-```
+- To ensure proper transformation, always specify the `model_type` parameter. This tells our system how to process your dataset appropriately. 
+For instance, when finetuning a Bedrock chat model, set `model_type` to `chat`. Similarly, use `text` when working with text-based models.
 
-### Finetune Validation
-Before starting a finetune job we must validate the dataset weather if there's any errors with dataset or it's fully valid & supported by the finetuning model.
-
-#### cURL:
-```bash
-curl --request POST \
-  --url <deployed_url>/v1/finetune/:finetuneId/validation/start \
-  --header 'x-portkey-api-key: <api_key>'
-```
-
-Finetune validation is a background process which doesn't return the validation status immediately. Before proceeding to the next step we must be sure that the validation is successful i.e `pk_dataset_validation_successfull`.
-
-To fetch the status of a finetune job use the below **cURL**:
-
-```bash
-curl --request GET \
-  --url <deployed_url>/v1/finetune/:finetuneId \
-  --header 'content-type: application/json' \
-  --header 'x-portkey-api-key: <api_key>'
-```
-
-### Start finetune Job with Provider
-Once the validation job is successful, we can continue running our finetune job with the provider.
-
-#### cURL:
-```bash
-curl --request POST \
-  --url <deployed_url>/v1/finetune/:finetuneId/start \
-  --header 'content-type: application/json' \
-  --header 'x-portkey-api-key: <api_key>' \
-```
-
-For providers like Amazon bedrock, `modelId` to start a finetune job differs for model to model in these type of situation we can pass a required modelId in the body of the request. Example curl follows
-
-```bash
-curl --request POST \
-  --url <deployed_url>/v1/finetune/:finetuneId/start \
-  --header 'content-type: application/json' \
-  --header 'x-portkey-api-key: <api_key>' \
-  --data '{
-  "override_model": "modelId"
-}'
-```
-
-Ex: To see the list of model-ids for AWS bedrock follow this [guide](https://docs.aws.amazon.com/bedrock/latest/userguide/model-ids.html#prov-throughput-models) 
 
 ### Cancel finetune
-If we're wanted to cancel a finetune, we can do so by using the following `cURL`.
+If you want to cancel a finetune, you can do so by using the following `cURL`.
 
 #### cURL:
 
 ```bash
 curl --request POST \
-  --url <deployed_url>/v1/finetune/:finetuneId/cancel \
+  --url <deployed_url>/v1/fine-tuning/jobs/:finetuneId \
   --header 'content-type: application/json' \
   --header 'x-portkey-api-key: <api_key>' \
 ```
@@ -207,6 +141,6 @@ We can verify the status of a finetune job either from Frontend or via Request.
 #### cURL:
 ```bash
 curl --request GET \
-  --url <deployed_url>/v1/finetune/:finetuneId \
+  --url <deployed_url>/v1/fine-tuning/jobs/:finetuneId \
   --header 'x-portkey-api-key: <api_key>'
 ```
