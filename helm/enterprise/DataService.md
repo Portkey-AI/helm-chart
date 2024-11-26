@@ -97,7 +97,12 @@ curl --request POST \
 '
 ```
 
-Currently `override_params` support 3 keys i.e `model` , `model_type` `template`. `model` is being used with `bedrock` as bedrock expects a different model `modelId` for finetune than for inference. `model_type` and `template` are being used for `fireworks` these parameters are being used for differentiating the dataset values for finetune job. More on this [Here](https://docs.fireworks.ai/fine-tuning/fine-tuning-models#preparing-your-dataset)
+Currently `override_params` support 3 keys i.e `model` , `model_type` `template`. 
+
+- `model` is being used with `bedrock` as bedrock expects a different model `modelId` for finetune than for inference. 
+- `model_type` and `template` are being used for `fireworks` these parameters are being used for differentiating the dataset values for finetune job. More on this [Here](https://docs.fireworks.ai/fine-tuning/fine-tuning-models#preparing-your-dataset)
+
+
 > For bedrock related `modelID` list, you can hit the `foundation-models` endpoint to see the list of models supported for finetuning.
 
 #### Response
@@ -112,7 +117,7 @@ Currently `override_params` support 3 keys i.e `model` , `model_type` `template`
 
 The above API call will automatically starts a dataset validation job and then continues finetune progress with provider if everything seems good with dataset and it's structure.
 
-> The finetuning service comes equipped with transformers that seamlessly convert OpenAI-formatted datasets into formats required by different providers. 
+The finetuning service comes equipped with transformers that seamlessly convert OpenAI-formatted datasets into formats required by different providers. 
 - Consider Bedrock as an example - although its finetuning capabilities are centered around text-to-text models, we accept chat-formatted datasets as well. 
 
 - Through our transformation pipeline, we ensure your data aligns perfectly with Provider's specifications. 
