@@ -1,6 +1,7 @@
 # Overview:
 Currently finetuning is fully supported API communication only vs partial support via UI.
-Architecture:
+
+## Architecture:
 
 ![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXffbhrnjyEjpmgafZtZ2qZVM55G6yCRB8FHf5BbbJAa-XTM4km6mfip2OnpZ5Ts-373avnjqMONLhaJOuQpDL-3pAPx7viYRrq1W-KJicd_OIu_0tJ1aDXAnPo_NjL6h7Jd0CuhmTqMcWKOE_FoGoYzsROg?key=GSWy0RPh6CRcV4iKuzA0zQ)
 
@@ -15,7 +16,7 @@ The gateway acts as an intermediary between control plane and deployed data serv
     4. v1/dataservice/finetune
 
     Note: 
-    - `v1/datasets` & `v1/fine-tuning/job` are exposed via API with at least `completions.write` scope.
+    - `v1/datasets` & `v1/fine-tuning/jobs` are exposed via API with at least `completions.write` scope.
     - `v1/dataservice/datasets` and `v1/dataservice/finetune` are used internally by the Control Plane for communication with the data service via gateway.
 
 ## Fine-tuning Process
@@ -53,7 +54,7 @@ curl --request POST \
 	"success": true,
 	"data": {
 		"id": "string",
-		"signedUrl": "string"
+		"signed_url": "string"
 	}
 }
 ```
@@ -92,6 +93,7 @@ curl --request POST \
   --header 'x-portkey-api-key: <api_key>' \
   --data '{
 	  "training_file":"{{datasetId}}",
+	  "validation_file": "{{validationDatasetId}}", # optional
 	  "model":"{{model}}",
 	  "provider":"{{provider}}", # bedrock, open-ai
 	  "suffix":"test-cohere-bed", # Name for finetune model
@@ -108,14 +110,6 @@ curl --request POST \
 '
 ```
 
-Currently `override_params` support 3 keys i.e `model` , `model_type` `template`. 
-
-- `model` is being used with `bedrock` as bedrock expects a different model `modelId` for finetune than for inference. 
-- `model_type` and `template` are being used for `fireworks` these parameters are being used for differentiating the dataset values for finetune job. More on this [Here](https://docs.fireworks.ai/fine-tuning/fine-tuning-models#preparing-your-dataset)
-
-
-> For bedrock related `modelID` list, you can hit the `foundation-models` endpoint to see the list of models supported for finetuning.
-
 #### Response
 ```json
 {
@@ -125,6 +119,14 @@ Currently `override_params` support 3 keys i.e `model` , `model_type` `template`
 	}
 }
 ```
+
+Currently `override_params` support 3 keys i.e `model` , `model_type` and `template`. 
+
+- `model` is being used with `bedrock` as bedrock expects a different model `modelId` for finetune than for inference. 
+- `model_type` and `template` are being used for `fireworks` these parameters are being used for differentiating the dataset values for finetune job. More on this [Here](https://docs.fireworks.ai/fine-tuning/fine-tuning-models#preparing-your-dataset)
+
+
+> For bedrock related `modelId` list, you can hit the `foundation-models` [endpoint](https://bedrock.us-east-1.amazonaws.com/foundation-models) to see the list of models supported for finetuning.
 
 The above API call will automatically starts a dataset validation job and then continues finetune progress with provider if everything seems good with dataset and it's structure.
 
@@ -151,6 +153,13 @@ curl --request POST \
   --header 'x-portkey-api-key: <api_key>' \
 ```
 
+#### Response
+```json
+{
+	"success": true
+}
+```
+
 ### Fetch a finetune
 We can verify the status of a finetune job either from Frontend or via Request.
 
@@ -159,4 +168,58 @@ We can verify the status of a finetune job either from Frontend or via Request.
 curl --request GET \
   --url <deployed_url>/v1/fine-tuning/jobs/:finetuneId \
   --header 'x-portkey-api-key: <api_key>'
+```
+
+#### Response
+```
+{
+  "success": true,
+  "data": {
+    "id": "<id>",
+    "name": "test-cohere-bed",
+    "description": "Test bedrock spec finetune with bedrock",
+    "slug": "ft:amazon.titan-text-lite-v1:test-cohere-bed-c10a3",
+    "organisationId": "<id>",
+    "organisationProviderApiKeyId": "<id>",
+    "ownerId": "<id>",
+    "aiModelId": "<id>",
+    "status": "provider_finetune_in_progress",
+    "createdAt": "2024-11-26T13:36:20.000Z",
+    "lastUpdatedAt": "2024-11-26T13:36:21.000Z",
+    "trainingDatasetId": "<id>",
+    "validationDatasetId": null,
+    "hyperparameters": {
+      "epochs": 1
+    },
+    "providerFinetuneId": "<id>",
+    "metadata": {
+      "trainingUnits": 0,
+      "trainingRecords": 0,
+      "trainingRecordCost": null,
+      "validationRecordCost": null
+    },
+    "providerFinetuneSlug": null,
+    "aiModelVersion": "amazon.titan-text-lite-v1",
+    "aiModelType": "text",
+    "trainingDataset": {
+      "id": "<id>",
+      "name": "test-assume.jsonl",
+      "description": "",
+      "organisationId": "<id>",
+      "createdBy": "<id>",
+      "aiModelId": null,
+      "s3Path": "test-assume.jsonl",
+      "totalRecords": null,
+      "totalUnits": null,
+      "type": "fine-tune",
+      "status": "active",
+      "createdAt": "2024-11-26T13:24:14.000Z",
+      "lastUpdatedAt": "2024-11-26T13:24:14.000Z",
+      "filters": null,
+      "providerFileId": "test-assume_transformed.jsonl",
+      "fileSize": null
+    },
+    "validationDataset": null
+  }
+}
 ```
