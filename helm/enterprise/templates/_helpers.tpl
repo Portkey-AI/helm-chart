@@ -227,6 +227,7 @@ Common Environment Env as Map
 {{- end }}
 
 {{- define "dataservice.commonEnv" -}}
+{{- include "portkeyenterprise.renderEnvVar" (list "PORT" .Values.dataservice.containerPort) | nindent 0 }}
 {{- $commonEnv := include "portkeyenterprise.commonEnvMap" . | fromYaml -}}
 {{- if hasKey $commonEnv "ALBUS_BASEPATH" -}}
 {{- include "portkeyenterprise.renderEnvVar" (list "ALBUS_ENDPOINT" $commonEnv.ALBUS_BASEPATH) | nindent 0 }}
