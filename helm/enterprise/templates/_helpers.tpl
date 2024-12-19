@@ -35,7 +35,6 @@ Common labels
 */}}
 {{- define "portkeyenterprise.labels" -}}
 helm.sh/chart: {{ include "portkeyenterprise.chart" . }}
-{{ include "portkeyenterprise.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -48,6 +47,43 @@ Selector labels
 {{- define "portkeyenterprise.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "portkeyenterprise.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
+{{/*
+Gateway labels
+*/}}
+{{- define "gateway.labels" -}}
+{{- include "portkeyenterprise.labels" . }}
+{{- include "portkeyenterprise.selectorLabels" . }}
+{{- end }}
+
+{{/*
+Data Service labels
+*/}}
+{{- define "dataservice.labels" -}}
+{{- include "portkeyenterprise.labels" . }}
+{{- include "dataservice.selectorLabels" . }}
+{{- end }}
+
+{{/*
+Data Service Selector labels
+*/}}
+{{- define "dataservice.selectorLabels" -}}
+{{- if .Values.dataservice.deployment.selectorLabels["app.kubernetes.io/name"] }}
+app.kubernetes.io/name: {{ .Values.dataservice.deployment.selectorLabels["app.kubernetes.io/name"] }}
+{{- else }}
+app.kubernetes.io/name: {{ include "portkeyenterprise.name" . }}
+{{- end }}
+{{- if .Values.dataservice.deployment.selectorLabels["app.kubernetes.io/instance"] }}
+app.kubernetes.io/instance: {{ .Values.dataservice.deployment.selectorLabels["app.kubernetes.io/instance"] }}
+{{- else }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+{{- if .Values.dataservice.deployment.selectorLabels["app.kubernetes.io/component"] }}
+app.kubernetes.io/component: {{ .Values.dataservice.deployment.selectorLabels["app.kubernetes.io/component"] }}
+{{- else }}
+app.kubernetes.io/component: {{ include "portkeyenterprise.fullname" . }}-{{ .Values.dataservice.name }}
+{{- end }}
 {{- end }}
 
 {{/*
