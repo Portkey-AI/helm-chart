@@ -192,6 +192,7 @@ dataservice:
     autoRestart: true
     replicas: 1
     labels: {}
+    selectorLabels: {}
     annotations: {}
     podSecurityContext: {}
     securityContext: {}
