@@ -53,8 +53,8 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 Gateway labels
 */}}
 {{- define "gateway.labels" -}}
-{{- include "portkeyenterprise.labels" . }}
-{{- include "portkeyenterprise.selectorLabels" . }}
+{{- include "portkeyenterprise.labels" . | nindent 4 }}
+{{- include "portkeyenterprise.selectorLabels" . | nindent 4 }}
 {{- end }}
 
 {{/*
@@ -69,18 +69,18 @@ Data Service labels
 Data Service Selector labels
 */}}
 {{- define "dataservice.selectorLabels" -}}
-{{- if .Values.dataservice.deployment.selectorLabels["app.kubernetes.io/name"] }}
-app.kubernetes.io/name: {{ .Values.dataservice.deployment.selectorLabels["app.kubernetes.io/name"] }}
+{{- if hasKey .Values.dataservice.deployment.selectorLabels "app.kubernetes.io/name" }}
+app.kubernetes.io/name: {{ get .Values.dataservice.deployment.selectorLabels "app.kubernetes.io/name" }}
 {{- else }}
 app.kubernetes.io/name: {{ include "portkeyenterprise.name" . }}
 {{- end }}
-{{- if .Values.dataservice.deployment.selectorLabels["app.kubernetes.io/instance"] }}
-app.kubernetes.io/instance: {{ .Values.dataservice.deployment.selectorLabels["app.kubernetes.io/instance"] }}
+{{- if hasKey .Values.dataservice.deployment.selectorLabels "app.kubernetes.io/instance" }}
+app.kubernetes.io/instance: {{ get .Values.dataservice.deployment.selectorLabels "app.kubernetes.io/instance" }}
 {{- else }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
-{{- if .Values.dataservice.deployment.selectorLabels["app.kubernetes.io/component"] }}
-app.kubernetes.io/component: {{ .Values.dataservice.deployment.selectorLabels["app.kubernetes.io/component"] }}
+{{- if hasKey .Values.dataservice.deployment.selectorLabels "app.kubernetes.io/component" }}
+app.kubernetes.io/component: {{ get .Values.dataservice.deployment.selectorLabels "app.kubernetes.io/component" }}
 {{- else }}
 app.kubernetes.io/component: {{ include "portkeyenterprise.fullname" . }}-{{ .Values.dataservice.name }}
 {{- end }}

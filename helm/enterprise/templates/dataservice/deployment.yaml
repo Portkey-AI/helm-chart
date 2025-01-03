@@ -36,7 +36,7 @@ spec:
         {{- with .Values.dataservice.deployment.labels }}
             {{- toYaml . | nindent 8 }}
         {{- end }}
-        {{- include "portkeyenterprise.labels" . | nindent 8 }}
+        {{- include "dataservice.labels" . | nindent 8 }}
         app.kubernetes.io/component: {{ include "portkeyenterprise.fullname" . }}-{{ .Values.dataservice.name }}
     spec:
       imagePullSecrets: 

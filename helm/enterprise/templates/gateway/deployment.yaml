@@ -34,7 +34,7 @@ spec:
         {{- include "portkeyenterprise.vaultAnnotations" . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "portkeyenterprise.labels" . | nindent 8 }}
+        {{- include "gateway.labels" . | nindent 8 }}
         {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
