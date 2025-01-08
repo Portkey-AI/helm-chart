@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: {{ include "portkeyenterprise.fullname" . }}
   labels:
-    {{- include "portkeyenterprise.labels" . | nindent 4 }}
+    {{- include "gateway.labels" . }}
     {{- with .Values.service.additionalLabels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}

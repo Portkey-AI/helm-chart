@@ -4,7 +4,7 @@ kind: Deployment
 metadata:
   name: {{ include "portkeyenterprise.fullname" . }}-{{ .Values.dataservice.name }}
   labels:
-    {{- include "portkeyenterprise.labels" . | nindent 4 }}
+    {{- include "dataservice.labels" . | nindent 4 }}
     {{- with .Values.dataservice.deployment.labels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
@@ -22,8 +22,7 @@ spec:
   {{- end }}
   selector:
     matchLabels:
-      {{- include "portkeyenterprise.selectorLabels" . | nindent 6 }}
-      app.kubernetes.io/component: {{ include "portkeyenterprise.fullname" . }}-{{ .Values.dataservice.name }}
+      {{- include "dataservice.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       annotations:
@@ -34,11 +33,10 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
+        {{- include "dataservice.labels" . | nindent 8 }}
         {{- with .Values.dataservice.deployment.labels }}
-            {{- toYaml . | nindent 8 }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
-        {{- include "portkeyenterprise.labels" . | nindent 8 }}
-        app.kubernetes.io/component: {{ include "portkeyenterprise.fullname" . }}-{{ .Values.dataservice.name }}
     spec:
       imagePullSecrets: 
       {{- range .Values.imageCredentials }}

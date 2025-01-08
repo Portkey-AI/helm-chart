@@ -3,7 +3,7 @@ kind: Pod
 metadata:
   name: "{{ include "portkeyenterprise.fullname" . }}-test-connection"
   labels:
-    {{- include "portkeyenterprise.labels" . | nindent 4 }}
+    {{- include "gateway.labels" . }}
   annotations:
     "helm.sh/hook": test
 spec:

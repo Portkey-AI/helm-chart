@@ -35,7 +35,6 @@ Common labels
 */}}
 {{- define "portkeyenterprise.labels" -}}
 helm.sh/chart: {{ include "portkeyenterprise.chart" . }}
-{{ include "portkeyenterprise.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -48,6 +47,43 @@ Selector labels
 {{- define "portkeyenterprise.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "portkeyenterprise.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
+{{/*
+Gateway labels
+*/}}
+{{- define "gateway.labels" -}}
+{{- include "portkeyenterprise.labels" . | nindent 4 }}
+{{- include "portkeyenterprise.selectorLabels" . | nindent 4 }}
+{{- end }}
+
+{{/*
+Data Service labels
+*/}}
+{{- define "dataservice.labels" -}}
+{{- include "portkeyenterprise.labels" . }}
+{{- include "dataservice.selectorLabels" . }}
+{{- end }}
+
+{{/*
+Data Service Selector labels
+*/}}
+{{- define "dataservice.selectorLabels" -}}
+{{- if hasKey .Values.dataservice.deployment.selectorLabels "app.kubernetes.io/name" }}
+app.kubernetes.io/name: {{ get .Values.dataservice.deployment.selectorLabels "app.kubernetes.io/name" }}
+{{- else }}
+app.kubernetes.io/name: {{ include "portkeyenterprise.name" . }}
+{{- end }}
+{{- if hasKey .Values.dataservice.deployment.selectorLabels "app.kubernetes.io/instance" }}
+app.kubernetes.io/instance: {{ get .Values.dataservice.deployment.selectorLabels "app.kubernetes.io/instance" }}
+{{- else }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+{{- if hasKey .Values.dataservice.deployment.selectorLabels "app.kubernetes.io/component" }}
+app.kubernetes.io/component: {{ get .Values.dataservice.deployment.selectorLabels "app.kubernetes.io/component" }}
+{{- else }}
+app.kubernetes.io/component: {{ include "portkeyenterprise.fullname" . }}-{{ .Values.dataservice.name }}
+{{- end }}
 {{- end }}
 
 {{/*
@@ -237,7 +273,7 @@ Common Environment Env as Map
 {{- include "portkeyenterprise.renderEnvVar" (list "NODE_ENV" "production") | nindent 0 }}
 {{- include "portkeyenterprise.renderEnvVar" (list "HYBRID_DEPLOYMENT" "ON") | nindent 0 }}
 {{- range $key, $value := $commonEnv }}
-{{- if has $key (list "ANALYTICS_STORE_ENDPOINT" "ANALYTICS_STORE_USER" "ANALYTICS_STORE_PASSWORD" "ANALYTICS_LOG_TABLE" "FINETUNES_BUCKET" "FINETUNES_AWS_ROLE_ARN" "LOG_EXPORTS_BUCKET") }}
+{{- if has $key (list "ANALYTICS_STORE" "ANALYTICS_STORE_ENDPOINT" "ANALYTICS_STORE_USER" "ANALYTICS_STORE_PASSWORD" "ANALYTICS_LOG_TABLE" "FINETUNES_BUCKET" "FINETUNES_AWS_ROLE_ARN" "LOG_EXPORTS_BUCKET") }}
 {{- include "portkeyenterprise.renderEnvVar" (list $key $value) | nindent 0 }}
 {{- end }}
 {{- end }}
