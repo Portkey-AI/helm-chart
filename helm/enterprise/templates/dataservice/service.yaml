@@ -4,9 +4,9 @@ kind: Service
 metadata:
   name: {{ include "portkeyenterprise.fullname" . }}-{{ .Values.dataservice.name }}
   labels:
-    {{- include "portkeyenterprise.labels" . | nindent 4 }}
-    {{- with .Values.dataservice.service.labels }}
-      {{- toYaml . | nindent 4 }}
+    {{- include "dataservice.labels" . | nindent 4 }}
+    {{- with .Values.dataservice.deployment.labels }}
+    {{- toYaml . | nindent 4 }}
     {{- end }}
   annotations:
     {{- include "portkeyenterprise.annotations" . | nindent 4 }}
@@ -26,6 +26,5 @@ spec:
       targetPort: dataservice
       protocol: TCP
   selector:
-    {{- include "portkeyenterprise.selectorLabels" . | nindent 4 }}
-    app.kubernetes.io/component: {{ include "portkeyenterprise.fullname" . }}-{{ .Values.dataservice.name }}
+    {{- include "dataservice.selectorLabels" . | nindent 4 }}
 {{- end -}}
