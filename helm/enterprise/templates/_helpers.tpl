@@ -153,9 +153,9 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 Vault Annotations
 */}}
 {{- define "portkeyenterprise.vaultAnnotations" -}}
-vault.hashicorp.com/agent-inject: "true"
-vault.hashicorp.com/agent-inject-secret-{{ .Chart.Name }}: {{ .Values.vaultConfig.secretPath | quote }}
-vault.hashicorp.com/role: {{ .Values.vaultConfig.role | quote }}
+{{.Values.vaultConfig.vaultHost}}/agent-inject: "true"
+{{.Values.vaultConfig.vaultHost}}/agent-inject-secret-{{ .Chart.Name }}: {{ .Values.vaultConfig.secretPath | quote }}
+{{.Values.vaultConfig.vaultHost}}/role: {{ .Values.vaultConfig.role | quote }}
 {{- end }}
 
 {{/*

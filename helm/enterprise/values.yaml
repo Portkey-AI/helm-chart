@@ -31,6 +31,7 @@ imageCredentials:
 useVaultInjection: false  # Set this to true to use Vault injection
 
 vaultConfig:
+  vaultHost: vault.hashicorp.com
   secretPath: "path/to/your/secret"
   role: "your-vault-role"
 
