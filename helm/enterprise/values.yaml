@@ -13,6 +13,10 @@ images:
     repository: "docker.io/portkeyai/data-service"
     pullPolicy: IfNotPresent
     tag: "1.0.6"
+  redisImage:
+    repository: "dockerhub/redis"
+    pullPolicy: IfNotPresent
+    tag: "7.4-alpine"
 
 imagePullSecrets: [portkeyenterpriseregistrycredentials]
 nameOverride: ""
@@ -135,6 +139,15 @@ resources: {}
   # requests:
   #   cpu: 100m
   #   memory: 128Mi
+
+# redis resources, if used
+redisResources: {}
+  # limits:
+  #   cpu: 500m
+  #   memory: 2Gi
+  # requests:
+  #   cpu: 500m
+  #   memory: 2Gi
 
 livenessProbe:
   httpGet:
