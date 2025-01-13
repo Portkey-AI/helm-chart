@@ -1,3 +1,5 @@
+# Portkey App Helm Chart
+
 ## Usage
 
 [Helm](https://helm.sh) must be installed to use the charts.  Please refer to
@@ -488,15 +490,19 @@ The following are mandatory
 ```
 
 ## Installation
-- Install the portkeyenterprise chart:
-  ``` bash
-  helm upgrade --install portkey-app ./helm/enterprise --namespace portkeyai --create-namespace  
-  ```
+
+1. Add the helm repo `helm repo add portkey-ai https://portkeyai.github.io/portkey-app`
+
+2. Update the helm repo `helm repo update`
+
+3. Install the chart `helm upgrade --install portkey-ai https://portkeyai.github.io/portkey-app -f ./chart/values.yaml -n portkeyai --create-namespace`
+
+4. Check the deployment `kubectl get pods -n portkeyai`
 
 ## Uninsatallation
 - Uninstall the chart:
   ``` bash
-  helm uninstall portkey-app --namespace portkeyai 
+  helm uninstall portkey-app --namespace portkeyai
   ```
 
 ## Port Tunnel
