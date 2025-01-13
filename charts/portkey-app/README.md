@@ -490,7 +490,7 @@ The following are mandatory
 ## Installation
 - Install the portkeyenterprise chart:
   ``` bash
-  helm install portkey-app ./helm/enterprise --namespace portkeyai --create-namespace  
+  helm upgrade --install portkey-app ./helm/enterprise --namespace portkeyai --create-namespace  
   ```
 
 ## Uninsatallation
