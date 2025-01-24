@@ -19,8 +19,9 @@ spec:
         {{- end }}
     spec:
       containers:
-        - image: redis:alpine
+        - image: "{{ .Values.images.redisImage.repository }}:{{ .Values.images.redisImage.tag }}"
           name: redis
-          resources: {}
+          resources:
+            {{- toYaml .Values.redisResources | nindent 12 }}
       restartPolicy: Always
 {{- end -}}
