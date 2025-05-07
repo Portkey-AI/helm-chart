@@ -74,6 +74,36 @@ The following values are needed for storing analytics data.
   ANALYTICS_GENERATION_HOOKS_TABLE:
 ```
 
+Portkey also supports pushing your analytics data to an OTEL compatible endpoint,
+the following values are needed for pushing to OTEL
+```yaml
+  OTEL_PUSH_ENABLED: true
+  OTEL_ENDPOINT: http://localhost:4318
+```
+Additionally you can configure arbitrary resource attributes of the otel logs in `otelconf.json` file
+```json
+{
+  "OTEL_RESOURCE_ATTRIBUTES": [
+    {
+      "key": "service.name",
+      "value": { "stringValue": "portkey" }
+    },
+    {
+      "key": "ApplicationShortName",
+      "value": { "stringValue": "portkey-gateway" }
+    },
+    {
+      "key": "AssetID",
+      "value": { "stringValue": "12345" }
+    },
+    {
+      "key": "deployment.environment",
+      "value": { "stringValue": "production" }
+    }
+  ]
+}
+``` 
+
 ### Log Storage
 
 `LOG_STORE` can be `mongo`, `s3`, `s3_assume`, `wasabi`, `gcs`, `azure`, or `netapp`.
