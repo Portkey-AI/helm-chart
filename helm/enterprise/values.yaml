@@ -8,11 +8,11 @@ images:
   gatewayImage:
     repository: "docker.io/portkeyai/gateway_enterprise"
     pullPolicy: IfNotPresent
-    tag: "1.10.0"
+    tag: "1.10.20"
   dataserviceImage:
     repository: "docker.io/portkeyai/data-service"
     pullPolicy: IfNotPresent
-    tag: "1.0.6"
+    tag: "1.1.10"
 
 imagePullSecrets: [portkeyenterpriseregistrycredentials]
 nameOverride: ""
@@ -34,6 +34,7 @@ vaultConfig:
   vaultHost: vault.hashicorp.com
   secretPath: "path/to/your/secret"
   role: "your-vault-role"
+  kubernetesSecret: ""
 
 environment:
   # Specify whether environment configuration should be deployed
@@ -135,26 +136,36 @@ livenessProbe:
   httpGet:
     path: /v1/health
     port: 8787
-  initialDelaySeconds: 30
+  initialDelaySeconds: 5
   periodSeconds: 60
-  timeoutSeconds: 5
-  failureThreshold: 5
+  timeoutSeconds: 3
+  failureThreshold: 3
 readinessProbe:
   httpGet:
     path: /v1/health
     port: 8787
-  initialDelaySeconds: 30
+  initialDelaySeconds: 5
   periodSeconds: 60
-  timeoutSeconds: 5
+  timeoutSeconds: 3
   successThreshold: 1
-  failureThreshold: 5
+  failureThreshold: 3
 
 autoscaling:
   enabled: false
   minReplicas: 1
-  maxReplicas: 100
-  targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
+  maxReplicas: 20
+  targetCPUUtilizationPercentage: 60
+  targetMemoryUtilizationPercentage: 60
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 0
+      podScaleUpValue: 2
+      percentScaleUpValue: 100
+      periodSeconds: 2
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      podScaleDownValue: 1
+      periodSeconds: 60
 
 # Additional volumes on the output Deployment definition.
 volumes: []
