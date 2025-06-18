@@ -62,8 +62,11 @@ environment:
 ```
 ### Analytics Store
 
-Supported `ANALYTICS_STORE` is `clickhouse`.
-The following values are needed for storing analytics data.
+Supported `ANALYTICS_STORE` is `clickhouse` or `control_plane` .
+
+If `ANALYTICS_STORE` is `control_plane`, no additional details are needed.
+
+If `ANALYTICS_STORE` is `clickhouse`, the following values are needed for storing analytics data.
 
 ``` yaml
   ANALYTICS_STORE_ENDPOINT: 
@@ -73,6 +76,14 @@ The following values are needed for storing analytics data.
   ANALYTICS_FEEDBACK_TABLE:
   ANALYTICS_GENERATION_HOOKS_TABLE:
 ```
+
+Portkey also supports pushing your analytics data to an OTEL compatible endpoint,
+the following values are needed for pushing to OTEL
+```yaml
+  OTEL_PUSH_ENABLED: true
+  OTEL_ENDPOINT: http://localhost:4318
+```
+Additionally you can configure arbitrary resource attributes of the otel logs by setting a comma separated value for `OTEL_RESOURCE_ATTRIBUTES` like `ApplicationShortName=gateway,AssetId=12323,deployment.service=production`
 
 ### Log Storage
 
@@ -488,15 +499,32 @@ The following are mandatory
 ```
 
 ## Installation
-- Install the portkeyenterprise chart:
-  ``` bash
-  helm install portkey-app ./helm/enterprise --namespace portkeyai --create-namespace  
-  ```
+If this command returns a list of nodes, you're good to go. If not, check your Kubernetes configuration.
+
+1. Add the helm repo 
+   ```bash
+   helm repo add portkey-ai https://portkey-ai.github.io/helm
+   ```
+
+2. Update the helm repo 
+   ```bash
+   helm repo update
+   ```
+
+3. Install the chart 
+   ```bash
+   helm upgrade --install portkey-ai portkey-ai/gateway -f ./chart/values.yaml -n portkeyai --create-namespace
+   ```
+
+4. Check the deployment 
+   ```bash
+   kubectl get pods -n portkeyai
+   ```
 
 ## Uninsatallation
 - Uninstall the chart:
   ``` bash
-  helm uninstall portkey-app --namespace portkeyai 
+  helm uninstall portkey-gateway --namespace portkeyai 
   ```
 
 ## Port Tunnel
